@@ -1,0 +1,7 @@
+index.php
+after form css
+  <!-- Vector CSS -->
+    <link href="<?php echo base_url() ?>assets/plugins/vectormap/jquery-jvectormap-2.0.2.css" rel="stylesheet" />
+    <!-- Calendar CSS -->
+    <link href="<?php echo base_url() ?>assets/plugins/calendar/dist/fullcalendar.css" rel="stylesheet" />
+
