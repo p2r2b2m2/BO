@@ -114,6 +114,25 @@ class Common_model extends CI_Model {
         return $query;
     }
 
+		function get_doc_types(){
+				$this->db->select();
+				$this->db->from('doc_types');
+				$this->db->order_by('type', 'ASC');
+				$query = $this->db->get();
+				$query = $query->result_array();
+				return $query;
+		}
+
+		function get_status_types(){
+				$this->db->select();
+				$this->db->from('shipment_status');
+				$this->db->order_by('status', 'ASC');
+				$query = $this->db->get();
+				$query = $query->result_array();
+				return $query;
+		}
+
+
     //-- get sub categories
     function get_sub_categories(){
         $this->db->select();
@@ -187,6 +206,19 @@ class Common_model extends CI_Model {
     public function check_email($email){
         $this->db->select('*');
         $this->db->from('user');
+        $this->db->where('email', $email);
+        $this->db->limit(1);
+        $query = $this->db->get();
+        if($query->num_rows() == 1) {
+            return $query->result();
+        }else{
+            return false;
+        }
+    }
+
+		public function check_email_customer($email){
+        $this->db->select('*');
+        $this->db->from('customers');
         $this->db->where('email', $email);
         $this->db->limit(1);
         $query = $this->db->get();

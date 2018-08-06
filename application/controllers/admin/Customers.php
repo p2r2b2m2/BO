@@ -28,28 +28,37 @@ class Customers extends CI_Controller {
 							'last_name' => $_POST['last_name'],
 							'mission_id' => $_POST['mission_id'],
 							'email' => $_POST['email'],
-							'phone' => $_POST['phone']
-						//	'street' => $_POST['street'],
-						//	'city' => $_POST['city'],
-						//	'state' => $_POST['state'],
-					//		'zip' => $_POST['zip'],
-						//	'country_id' => $_POST['country_id']
+							'phone' => $_POST['phone'],
+							'street' => $_POST['street'],
+							'city' => $_POST['city'],
+							'state' => $_POST['state'],
+							'zip' => $_POST['zip'],
+							'country_id' => $_POST['country_id']
 					);
 
 						$data = $this->security->xss_clean($data);
+						$email = $this->common_model->check_email_customer($_POST['email']);
+
+            if (empty($email)) {
 						$id = $this->common_model->insert($data, 'customers');
 
 						//-- image upload code
 
 
-						$this->session->set_flashdata('msg', 'Mission added Successfully');
-						$this->session->set_flashdata('tab', 'address');
-						redirect(base_url('admin/customers/edit/'.$id));
+						$this->session->set_flashdata('msg', 'Customer added Successfully');
+						redirect(base_url('admin/customers'));
+					}
+					else
+					{
+						$this->session->set_flashdata('error_msg', 'Email already exist, try another email');
+						redirect(base_url('admin/customers/add'));
+					}
 				}
 
 				$data = array();
 				$data['page_title'] = 'Customers';
 				$data['missions'] = $this->common_model->select_missions('missions','id');
+				$data['country'] = $this->common_model->select_country('country');
 				$data['main_content'] = $this->load->view('admin/customers/add_customer', $data, TRUE);
 				$this->load->view('admin/index', $data);
 		}
@@ -61,15 +70,20 @@ class Customers extends CI_Controller {
 				if ($_POST) {
 
 						$data = array(
-								'mission_name' => $_POST['mission_name'],
+								'first_name' => $_POST['first_name'],
+								'last_name' => $_POST['last_name'],
+								'mission_id' => $_POST['mission_id'],
+								'email' => $_POST['email'],
+								'phone' => $_POST['phone'],
 								'street' => $_POST['street'],
 								'city' => $_POST['city'],
 								'state' => $_POST['state'],
-								'zip' => $_POST['zip']
+								'zip' => $_POST['zip'],
+								'country_id' => $_POST['country_id']
 						);
 
 						$data = $this->security->xss_clean($data);
-						$this->common_model->edit_customer($data, $id, 'customers');
+						$this->common_model->update($data, $id, 'customers');
 
 						$this->session->set_flashdata('msg', 'Customer details edited Successfully');
 						redirect(base_url('admin/customers'));
@@ -77,6 +91,7 @@ class Customers extends CI_Controller {
 				}
 
 				$data['customer'] = $this->common_model->get_item_by_id($id, 'customers');
+				$data['country'] = $this->common_model->select_country('country');
 				$data['missions'] = $this->common_model->select_missions('missions','id');
 				$data['main_content'] = $this->load->view('admin/customers/edit_customer', $data, TRUE);
 				$this->load->view('admin/index', $data);

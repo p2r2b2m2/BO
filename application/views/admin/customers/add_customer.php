@@ -20,80 +20,149 @@
    <!-- ============================================================== -->
    <!-- Start Page Content -->
    <!-- ============================================================== -->
-   <!-- Row -->
+<div
+
    <div class="row">
-       <!-- Column -->
-
-       <!-- Column -->
-       <!-- Column -->
        <div class="col-lg-12">
-           <div class="card">
-               <!-- Nav tabs -->
-               <ul class="nav nav-tabs profile-tab" role="tablist">
-                   <li class="nav-item"> <a class="nav-link active" data-toggle="tab" href="#home" role="tab"><strong>Contact</strong></a> </li>
-              </ul>
-               <!-- Tab panes -->
-               <div class="tab-content">
+         <?php $msg = $this->session->flashdata('msg'); ?>
+         <?php if (isset($msg)): ?>
+             <div class="alert alert-success delete_msg pull" style="width: 100%"> <i class="fa fa-check-circle"></i> <?php echo $msg; ?> &nbsp;
+             <button type="button" class="close" data-dismiss="alert" aria-label="Close"> <span aria-hidden="true">×</span> </button>
+             </div>
+         <?php endif ?>
 
-                 <div class="tab-pane active" id="home" role="tabpanel">
-                     <div class="card-body">
-                       <form method="post" enctype="multipart/form-data" action="<?php echo base_url('admin/customers/add') ?>" class="form-horizontal form-material" novalidate>
-                            <div class="form-group">
-                                 <label class="col-md-12">First Name <span class="text-danger">*</span></label>
-                                 <div class="col-md-12">
-                                     <input type="text" name="first_name"  required="" class="form-control">
-                                 </div>
-                             </div>
-                             <div class="form-group">
-                                 <label class="col-md-12">Last Name <span class="text-danger">*</span></label>
-                                 <div class="col-md-12">
-                                     <input type="text"  name="last_name"  required="" class="form-control">
-                                 </div>
-                             </div>
-                             <div class="form-group">
-                                 <label class="col-sm-12">Mission</label>
-                                 <div class="col-sm-12">
-                                   <select class="form-control custom-select" name="mission_id" aria-invalid="false">
-                                       <?php foreach ($missions as $mission): ?>
-                                           <option value="<?php echo $mission['id']; ?>"><?php echo $mission['mission_name']; ?></option>
-                                       <?php endforeach ?>
-                                   </select>
-                                 </div>
-                             </div>
-                             <div class="form-group">
-                                 <label for="example-email" class="col-md-12">Email <span class="text-danger">*</span></label>
-                                 <div class="col-md-12">
-                                     <input type="email" name="email" placeholder="johnathan@admin.com" required="" class="form-control" name="example-email">
-                                 </div>
-                             </div>
-                             <div class="form-group">
-                                 <label class="col-md-12">Phone No</label>
-                                 <div class="col-md-12">
-                                     <input type="text" name="phone" class="form-control">
-                                 </div>
-                             </div>
+         <?php $error_msg = $this->session->flashdata('error_msg'); ?>
+         <?php if (isset($error_msg)): ?>
+             <div class="alert alert-danger delete_msg pull" style="width: 100%"> <i class="fa fa-times"></i> <?php echo $error_msg; ?> &nbsp;
+             <button type="button" class="close" data-dismiss="alert" aria-label="Close"> <span aria-hidden="true">×</span> </button>
+             </div>
+         <?php endif ?>
+           <div class="card card-outline-info">
+               <div class="card-header">
+                   <h4 class="m-b-0 text-white">Add Customer</h4>
+               </div>
+               <div class="card-body">
+                   <form method="post" enctype="multipart/form-data" action="<?php echo base_url('admin/customers/add') ?>" >
+                       <div class="form-body">
+                           <h3 class="card-title">Person Info</h3>
+                           <hr>
+                           <div class="row p-t-20">
+                               <div class="col-md-6">
+                                   <div class="form-group">
+                                       <label class="control-label">First Name <span class="text-danger">*</span></label>
+                                       <input type="text" name="first_name"  required="" class="form-control">
+                               </div>
+                               </div>
+                               <!--/span-->
+                               <div class="col-md-6">
+                                   <div class="form-group">
+                                       <label class="control-label">Last Name <span class="text-danger">*</span></label>
+                                       <input type="text" name="last_name"  required="" class="form-control">
+                               </div>
+                               </div>
+                               <!--/span-->
+                           </div>
+                           <!--/row-->
+                           <div class="row">
+                               <div class="col-md-6">
+                                   <div class="form-group has-success">
+                                       <label class="control-label">Mission</label>
+                                       <select class="form-control" name="mission_id">
 
-                             <!-- CSRF token -->
-                             <input type="hidden" name="<?=$this->security->get_csrf_token_name();?>" value="<?=$this->security->get_csrf_hash();?>" />
+                                           <?php foreach ($missions as $mission): ?>
+                                               <option  value="<?php echo $mission['id']; ?>"><?php echo $mission['mission_name']; ?></option>
+                                           <?php endforeach ?>
 
+                                       </select>
+                                       <small class="form-control-feedback"> Select Mission</small> </div>
+                               </div>
+                               <!--/span-->
+                               <div class="col-md-6">
+                                   <div class="form-group">
+                                       <label class="control-label">Email <span class="text-danger">*</span></label>
+                                       <input type="email" required="" class="form-control" name="email" >
+                                   </div>
+                               </div>
+                               <!--/span-->
+                           </div>
+                           <!--/row-->
+                           <div class="row">
+                               <div class="col-md-6">
+                                   <div class="form-group">
+                                       <label class="control-label">Phone No</label>
+                                       <input type="text" name="phone" class="form-control" >
+                                   </div>
+                               </div>
+                               <!--/span-->
+                               <div class="col-md-6">
 
-                             <div class="form-group">
-                                 <div class="col-sm-12">
-                                     <button class="btn btn-success">Save Customer</button>
-                                 </div>
-                             </div>
+                               </div>
+                               <!--/span-->
+                           </div>
+                           <!--/row-->
+                           <h3 class="box-title m-t-40">Address</h3>
+                           <hr>
+                           <div class="row">
+                               <div class="col-md-12 ">
+                                   <div class="form-group">
+                                       <label>Street</label>
+                                       <input type="text" name="street" class="form-control" >
+                                   </div>
+                               </div>
+                           </div>
+                           <div class="row">
+                               <div class="col-md-6">
+                                   <div class="form-group">
+                                       <label>City</label>
+                                       <input type="text" name="city" class="form-control" >
+                                   </div>
+                               </div>
+                               <!--/span-->
+                               <div class="col-md-6">
+                                   <div class="form-group">
+                                       <label>State</label>
+                                       <input type="text" name="state" class="form-control">
+                                   </div>
+                               </div>
+                               <!--/span-->
+                           </div>
+                           <!--/row-->
+                           <div class="row">
+                               <div class="col-md-6">
+                                   <div class="form-group">
+                                       <label>Zip Code</label>
+                                       <input type="text" name="zip" class="form-control" >
+                                   </div>
+                               </div>
+                               <!--/span-->
+                               <div class="col-md-6">
+                                   <div class="form-group">
+                                       <label>Country</label>
+                                       <select class="form-control custom select" name="country_id">
 
-                         </form>
-                     </div>
-                 </div>
+                                           <?php foreach ($country as $cn): ?>
 
-                   <!--second tab-->
+                                               <option  value="<?php echo $cn['id']; ?>"><?php echo $cn['name']; ?></option>
+                                           <?php endforeach ?>
+
+                                       </select>
+                                   </div>
+                               </div>
+                               <!--/span-->
+                           </div>
+                       </div>
+                       <!-- CSRF token -->
+                       <input type="hidden" name="<?=$this->security->get_csrf_token_name();?>" value="<?=$this->security->get_csrf_hash();?>" />
+
+                       <div class="form-actions">
+                           <button type="submit" class="btn btn-success"> <i class="fa fa-check"></i> Save Customer</button>
+                       </div>
+                   </form>
                </div>
            </div>
        </div>
-       <!-- Column -->
    </div>
-   <!-- Row -->
+
    <!-- ============================================================== -->
    <!-- End PAge Content -->
    <!-- ============================================================== -->

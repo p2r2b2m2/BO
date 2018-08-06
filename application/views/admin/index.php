@@ -223,6 +223,14 @@
                         </li>
 
                         <li>
+                            <a class="has-arrow waves-effect waves-dark" href="#" aria-expanded="false"><i class="mdi mdi-menu"></i><span class="hide-menu">Maintanance</span></a>
+                            <ul aria-expanded="false" class="collapse">
+                                <li><a href="<?php echo base_url('admin/doctypes') ?>"><i class="fa fa-angle-right"></i> Document Types </a></li>
+                                <li><a href="<?php echo base_url('admin/statustypes') ?>"><i class="fa fa-angle-right"></i> Status Types </a></li>
+                            </ul>
+                        </li>
+
+                        <li>
                             <a class="has-arrow waves-effect waves-dark" href="#" aria-expanded="false"><i class="mdi mdi-menu"></i><span class="hide-menu">Customers</span></a>
                             <ul aria-expanded="false" class="collapse">
                                 <li><a href="<?php echo base_url('admin/customers') ?>"><i class="fa fa-angle-right"></i> All Customers </a></li>
