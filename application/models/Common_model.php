@@ -64,6 +64,14 @@ class Common_model extends CI_Model {
 				return $query;
 		}
 
+
+
+		function select_customers(){
+			$query = $this->db->query('SELECT id,first_name FROM customers order by first_name');
+				$query = $query->result_array();
+				return $query;
+		}
+
     //-- select by id
     function select_option($id,$table){
         $this->db->select();
@@ -94,6 +102,19 @@ class Common_model extends CI_Model {
 				return $query;
 		}
 
+
+
+		function get_jdocs_by_id($id,$table){
+			$this->db->select('jd.*, dt.type as type');
+			$this->db->from('job_docs jd');
+			$this->db->join('doc_types dt', 'dt.id = jd.doc_type_id');
+			$this->db->where('jd.job_id', $id);
+			$this->db->order_by('jd.id', 'DESC');
+			$query = $this->db->get();
+			$query = $query->result_array();
+			return $query;
+		}
+
     //get category
     public function get_category($id)
     {
@@ -119,6 +140,14 @@ class Common_model extends CI_Model {
 				$this->db->from('doc_types');
 				$this->db->order_by('type', 'ASC');
 				$query = $this->db->get();
+				$query = $query->result_array();
+				return $query;
+		}
+
+
+
+		function get_available_doc_types($id){
+		  	$query = $this->db->query('SELECT id,type FROM doc_types WHERE status = 1 AND id NOT IN (SELECT doc_type_id FROM job_docs WHERE job_id  = '.$id.')');
 				$query = $query->result_array();
 				return $query;
 		}
@@ -160,6 +189,17 @@ class Common_model extends CI_Model {
 				$this->db->select();
 				$this->db->from('missions');
 				$this->db->order_by('mission_name', 'ASC');
+				$query = $this->db->get();
+				$query = $query->result_array();
+				return $query;
+		}
+
+
+
+		function get_all_jobs(){
+				$this->db->select();
+				$this->db->from('jobs');
+				$this->db->order_by('id', 'ASC');
 				$query = $this->db->get();
 				$query = $query->result_array();
 				return $query;

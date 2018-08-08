@@ -45,16 +45,16 @@
                     <!-- Nav tabs -->
                     <ul class="nav nav-tabs">
                     <li class="nav-item">
-                      <a class="nav-link" href="<?php echo base_url('admin/jobs/edit/1') ?>">Link</a>
+                      <a class="nav-link" href="<?php echo base_url('admin/jobs/edit/'.$jobs->id) ?>">Link</a>
                     </li>
                     <li class="nav-item">
-                      <a class="nav-link active" href="<?php echo base_url('admin/jobs/edit_job_status/1') ?>">Link1</a>
+                      <a class="nav-link active" href="<?php echo base_url('admin/jobs/edit_job_status/'.$jobs->id) ?>">Link1</a>
                     </li>
                     <li class="nav-item">
                       <a class="nav-link" href="#">Link2</a>
                     </li>
                     <li class="nav-item">
-                      <a class="nav-link " href="#">Link4</a>
+                      <a class="nav-link " href="<?php echo base_url('admin/jobs/job_docs/'.$jobs->id) ?>">Link4</a>
                     </li>
                   </ul>
                     <!-- Tab panes -->

@@ -10,7 +10,7 @@
         <div class="col-md-5 col-8 align-self-center">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="javascript:void(0)">Home</a></li>
-                <li class="breadcrumb-item active">Add New Item</li>
+                <li class="breadcrumb-item active">Add New Job</li>
             </ol>
         </div>
 
@@ -25,6 +25,13 @@
     <div class="row">
         <div class="col-lg-12">
 
+          <?php $msg = $this->session->flashdata('msg'); ?>
+          <?php if (isset($msg)): ?>
+              <div class="alert alert-success delete_msg pull" style="width: 100%"> <i class="fa fa-check-circle"></i> <?php echo $msg; ?> &nbsp;
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close"> <span aria-hidden="true">×</span> </button>
+              </div>
+          <?php endif ?>
+
             <?php $error_msg = $this->session->flashdata('error_msg'); ?>
             <?php if (isset($error_msg)): ?>
                 <div class="alert alert-danger delete_msg pull" style="width: 100%"> <i class="fa fa-times"></i> <?php echo $error_msg; ?> &nbsp;
@@ -34,18 +41,25 @@
 
             <div class="card card-outline-info">
                 <div class="card-header">
-                    <h4 class="m-b-0 text-white"> All Mission <a href="<?php echo base_url('admin/missions') ?>" class="btn btn-info pull-right"><i class="fa fa-list"></i> All Missions </a></h4>
+                    <h4 class="m-b-0 text-white"> New Job <a href="<?php echo base_url('admin/jobs') ?>" class="btn btn-info pull-right"><i class="fa fa-list"></i> All Jobs</a></h4>
                 </div>
                 <div class="card-body">
-                    <form method="post" enctype="multipart/form-data" action="<?php echo base_url('admin/missions/add') ?>" class="form-horizontal" novalidate>
+                    <form method="post" enctype="multipart/form-data" action="<?php echo base_url('admin/jobs/add') ?>" class="form-horizontal" novalidate>
                         <div class="form-body">
                             <br>
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="form-group row">
-                                        <label class="control-label text-right col-md-2">Mission Name <span class="text-danger">*</span></label>
+                                        <label class="control-label text-right col-md-2">Customer<span class="text-danger">*</span></label>
                                         <div class="col-md-9 controls">
-                                            <input type="text" name="mission_name" class="form-control" required data-validation-required-message="Mission Name is required">
+                                          <select class="form-control" name="customer_id">
+
+                                              <?php foreach ($customers as $customer): ?>
+                                                  <option  value="<?php echo $customer['id']; ?>"><?php echo $customer['first_name']; ?></option>
+                                              <?php endforeach ?>
+
+                                          </select>
+                                          <small class="form-control-feedback"> Select customer</small> </div>
                                         </div>
                                     </div>
                                 </div>
@@ -54,15 +68,15 @@
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="form-group row">
-                                        <label class="control-label text-right col-md-2">Street <span class="text-danger"></span></label>
+                                        <label class="control-label text-right col-md-2">Booking Number <span class="text-danger">*</span></label>
                                         <div class="col-md-9 controls">
-                                            <input type="text" name="street" class="form-control" >
+                                            <input type="text" name="booking_number" class="form-control" >
                                         </div>
                                     </div>
                                 </div>
                             </div>
 
-
+                            <!--
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="form-group row">
@@ -96,7 +110,7 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                            </div>  -->
 
 
 
@@ -109,7 +123,7 @@
                                     <div class="form-group row">
                                         <label class="control-label text-right col-md-2"></label>
                                         <div class="controls">
-                                            <button type="submit" class="btn btn-success">Add Mission</button>
+                                            <button type="submit" class="btn btn-success">Add Job</button>
                                         </div>
                                     </div>
                                 </div>

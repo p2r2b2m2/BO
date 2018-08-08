@@ -49,21 +49,14 @@
                             <thead>
                                 <tr>
                                     <th>Customer</th>
-                                    <th>Mission</th>
-                                    <th>Carrier</th>
-                                    <th>Destination</th>
-                                    <th>Booking#</th>
-                                    <th>B</th>
+                                    <th>booking_number</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
                             <tfoot>
                                 <tr>
-                                    <th>Mission Name</th>
-                                    <th>Street</th>
-                                    <th>City</th>
-                                    <th>State</th>
-                                    <th>Zip</th>
+                                    <th>Customer</th>
+                                    <th>booking_number</th>
                                     <th>Action</th>
                                 </tr>
                             </tfoot>
@@ -72,11 +65,8 @@
                             <?php $i = 1; foreach ($jobs as $job): ?>
 
                                 <tr>
-                                    <td><?php echo $job['mission_name']; ?></td>
-                                    <td><?php echo $job['street']; ?></td>
-                                    <td><?php echo $job['city']; ?></td>
-                                    <td><?php echo $job['state']; ?></td>
-                                    <td><?php echo $job['zip']; ?></td>
+                                    <td><?php echo $job['customer_id']; ?></td>
+                                    <td><?php echo $job['booking_number']; ?></td>
 
 
                                     <td class="text-nowrap">
