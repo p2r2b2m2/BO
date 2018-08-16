@@ -101,10 +101,10 @@ class Customers extends CI_Controller {
 
 		public function delete($id)
     {
-      // if (($this->common_model->get_constrain('jobs','customer_id',$id)) > 0) {
-      //   $this->session->set_flashdata('error_msg', 'Customers with Jobs Cannot be deleted');
-      //   redirect(base_url('admin/customers'));
-      // }
+       if (($this->common_model->get_constrain('jobs','customer_id',$id))) {
+         $this->session->set_flashdata('error_msg', 'Customers with Jobs Cannot be deleted');
+         redirect(base_url('admin/customers'));
+       }
         $this->common_model->delete($id,'customers');
 				$this->session->set_flashdata('msg', 'Customer Deleted');
         redirect(base_url('admin/customers'));

@@ -112,8 +112,71 @@
         <div class="col-lg-12">
             <div class="card">
                 <div class="card-body">
-                    <h4 class="card-title">Total Visits</h4>
-                    <div id="visitfromworld" style="width:100%!important; height:415px"></div>
+                    <h4 class="card-title">Active Jobs</h4>
+                    <div class="table-responsive m-t-40">
+                        <table id="example23" class="display nowrap table table-hover table-striped table-bordered" cellspacing="0" width="100%">
+                            <thead>
+                                <tr>
+                                    <th>ASL Reference #</th>
+                                    <th>Invoice #</th>
+                                    <th>Customer</th>
+                                    <th>Mission</th>
+                                    <th>Destination</th>
+                                    <th>Job Type</th>
+                                    <th>ETD</th>
+                                    <th>ETA</th>
+                                    <th>Invoiced Date</th>
+                                    <th>Payment Date</th>
+                                    <th>Shipment Status</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tfoot>
+                                <tr>
+                                  <th>ASL Reference #</th>
+                                  <th>Invoice #</th>
+                                  <th>Customer</th>
+                                  <th>Mission</th>
+                                  <th>Destination</th>
+                                  <th>Job Type</th>
+                                  <th>ETD</th>
+                                  <th>ETA</th>
+                                  <th>Invoiced Date</th>
+                                  <th>Payment Date</th>
+                                  <th>Shipment Status</th>
+                                  <th>Action</th>
+                                </tr>
+                            </tfoot>
+
+                            <tbody>
+                            <?php $i = 1; foreach ($jobs as $job): ?>
+
+                                <tr>
+                                    <td><?php echo $job['asl_reference_no']; ?></td>
+                                    <td><?php echo $job['invoice_number']; ?></td>
+                                    <td><?php echo $job['customer']; ?></td>
+                                    <td><?php echo $job['mission_name']; ?></td>
+                                    <td><?php echo $job['final_destination']; ?></td>
+                                    <td><?php echo $job['type']; ?></td>
+                                    <td><?php echo $job['sail_date']; ?></td>
+                                    <td><?php echo $job['eta']; ?></td>
+                                    <td><?php echo $job['invoiced_date']; ?></td>
+                                    <td><?php echo $job['payment_date']; ?></td>
+                                    <td><?php echo $job['status']; ?></td>
+
+
+                                    <td class="text-nowrap">
+                                            <a href="<?php echo base_url('admin/jobs/edit/'.$job['id']) ?>" data-toggle="tooltip" data-original-title="Edit"> <i class="fa fa-pencil text-success m-r-10"></i> </a>
+                                    </td>
+                                </tr>
+
+                            <?php $i++; endforeach ?>
+
+                            </tbody>
+
+
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>

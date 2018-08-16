@@ -43,7 +43,7 @@
         <div class="col-md-6">
             <div class="card card-outline-info">
                 <div class="card-header">
-                    <h4 class="m-b-0 text-white"> New Document Type
+                    <h6 class="m-b-0 text-white"> New Document Type
                 </div>
                 <div class="card-body">
                     <form method="post" action="<?php echo base_url('admin/doctypes/add') ?>" class="form-horizontal" novalidate>
@@ -103,7 +103,7 @@
         <div class="col-md-6">
             <div class="card card-outline-info">
                 <div class="card-header">
-                    <h4 class="m-b-0 text-white"> All Document Types</h4>
+                    <h6 class="m-b-0 text-white"> All Document Types</h6>
                 </div>
                 <div class="card-body">
 

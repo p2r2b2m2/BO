@@ -11,10 +11,10 @@ class Login_model extends CI_Model {
     public function check_email($email){
         $this->db->select('*');
         $this->db->from('user');
-        $this->db->where('email', $email); 
+        $this->db->where('email', $email);
         $this->db->limit(1);
         $query = $this->db->get();
-        if($query->num_rows() == 1) {                 
+        if($query->num_rows() == 1) {
             return $query->result();
         }else{
             return false;
@@ -26,10 +26,11 @@ class Login_model extends CI_Model {
     public function validate_id($id){
         $this->db->select('*');
         $this->db->from('user');
-        $this->db->where('md5(id)', $id); 
+        $this->db->where('md5(id)', $id);
+        $this->db->where('status', '1');
         $this->db->limit(1);
         $query = $this->db->get();
-        if($query -> num_rows() == 1){                 
+        if($query -> num_rows() == 1){
             return $query->result();
         }
         else{
@@ -40,16 +41,17 @@ class Login_model extends CI_Model {
 
 
     //-- check valid user
-    function validate_user(){            
-        
+    function validate_user(){
+
         $this->db->select('*');
         $this->db->from('user');
-        $this->db->where('email', $this->input->post('user_name')); 
+        $this->db->where('email', $this->input->post('user_name'));
         $this->db->where('password', md5($this->input->post('password')));
+        $this->db->where('status', '1');
         $this->db->limit(1);
-        $query = $this->db->get();   
-        
-        if($query->num_rows() == 1){                 
+        $query = $this->db->get();
+
+        if($query->num_rows() == 1){
            return $query->result();
         }
         else{

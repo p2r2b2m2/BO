@@ -28,6 +28,12 @@ class Common_model extends CI_Model {
         return;
     }
 
+		function update_with_job_id($action, $id, $table){
+				$this->db->where('job_id',$id);
+				$this->db->update($table,$action);
+				return;
+		}
+
     //-- delete function
     function delete($id,$table){
         $this->db->delete($table, array('id' => $id));
@@ -52,6 +58,8 @@ class Common_model extends CI_Model {
     }
 
 //$query = $this->db->query('YOUR QUERY HERE');
+
+//DROP DOWNS START
 		function select_country($table){
 			$query = $this->db->query('SELECT 0 as id, \'select\' as name UNION SELECT id,name FROM country order by id');
 				$query = $query->result_array();
@@ -67,10 +75,41 @@ class Common_model extends CI_Model {
 
 
 		function select_customers(){
-			$query = $this->db->query('SELECT id,first_name FROM customers order by first_name');
+			$query = $this->db->query('SELECT c.id,concat(first_name,\' \',last_name,\' \',IFNULL(m.mission_name,\'\')) as name ,m.mission_name  FROM customers c left join missions m ON c.mission_id = m.id order by first_name');
 				$query = $query->result_array();
 				return $query;
 		}
+
+		function select_job_types(){
+			$query = $this->db->query('SELECT id,type FROM job_types WHERE status = 1 ORDER BY type');
+				$query = $query->result_array();
+				return $query;
+		}
+
+
+		function select_equipment_types(){
+			$query = $this->db->query('SELECT 0 as id, \' select\' as type UNION SELECT id,type FROM equipment_types WHERE status = 1 ORDER BY type');
+				$query = $query->result_array();
+				return $query;
+		}
+
+
+		function get_available_doc_types($id){
+				$query = $this->db->query('SELECT id,type FROM doc_types WHERE status = 1 AND id NOT IN (SELECT doc_type_id FROM job_docs WHERE job_id  = '.$id.')');
+				$query = $query->result_array();
+				return $query;
+		}
+
+		function select_status_types(){
+			$query = $this->db->query('SELECT id,status,enable_email FROM shipment_status WHERE active_ind = 1 ORDER BY status');
+				$query = $query->result_array();
+				return $query;
+		}
+
+
+		//END OF DROP DOWNS
+
+
 
     //-- select by id
     function select_option($id,$table){
@@ -88,6 +127,15 @@ class Common_model extends CI_Model {
         $this->db->select();
         $this->db->from($table);
         $this->db->where('id', $id);
+        $query = $this->db->get();
+        $query = $query->row();
+        return $query;
+    }
+
+		function get_item_by_job_id($id,$table){
+        $this->db->select();
+        $this->db->from($table);
+        $this->db->where('job_id', $id);
         $query = $this->db->get();
         $query = $query->row();
         return $query;
@@ -146,11 +194,26 @@ class Common_model extends CI_Model {
 
 
 
-		function get_available_doc_types($id){
-		  	$query = $this->db->query('SELECT id,type FROM doc_types WHERE status = 1 AND id NOT IN (SELECT doc_type_id FROM job_docs WHERE job_id  = '.$id.')');
-				$query = $query->result_array();
-				return $query;
-		}
+function get_equipment_types(){
+		$this->db->select();
+		$this->db->from('equipment_types');
+		$this->db->order_by('type', 'ASC');
+		$query = $this->db->get();
+		$query = $query->result_array();
+		return $query;
+}
+
+
+	function get_job_types(){
+		$this->db->select();
+		$this->db->from('job_types');
+		$this->db->order_by('type', 'ASC');
+		$query = $this->db->get();
+		$query = $query->result_array();
+		return $query;
+	}
+
+
 
 		function get_status_types(){
 				$this->db->select();
@@ -160,6 +223,78 @@ class Common_model extends CI_Model {
 				$query = $query->result_array();
 				return $query;
 		}
+
+
+		//get_status_history
+		function get_status_history($id){
+				$this->db->select('h.*,s.status');
+				$this->db->from('status_history h');
+				$this->db->join('shipment_status s', 's.id = h.status_id');
+				$this->db->where('h.job_id', $id);
+				$this->db->order_by('h.updated_on', 'DESC');
+				$query = $this->db->get();
+				$query = $query->result_array();
+				return $query;
+		}
+
+		//get_equeue_for_job
+		function get_equeue_for_job($id){
+				$this->db->select('e.*,h.comment,s.status');
+				$this->db->from('status_history h');
+				$this->db->join('email_queue e', 'e.status_history_id = h.id');
+				$this->db->join('shipment_status s', 's.id = h.status_id');
+				$this->db->where('h.job_id', $id);
+				$this->db->order_by('e.sent', 'ASC');
+				$query = $this->db->get();
+				$query = $query->result_array();
+				return $query;
+		}
+
+	//	get_customer_email_by_job
+	function get_customer_email_by_job($id){
+			$this->db->select('c.email');
+			$this->db->from('jobs j');
+			$this->db->join('customers c', 'c.id = j.customer_id');
+			$this->db->where('j.id', $id);
+			$query = $this->db->get();
+			return $query->row()->email;
+	}
+
+	//get_customer_name
+	function get_customer_name_by_job($id){
+			$this->db->select('concat(c.first_name,\' \',c.last_name) as name');
+			$this->db->from('jobs j');
+			$this->db->join('customers c', 'c.id = j.customer_id');
+			$this->db->where('j.id', $id);
+			$query = $this->db->get();
+			return $query->row()->name;
+	}
+
+ //get_bl_number
+ function get_bl_number($id){
+		 $this->db->select('bl_number');
+		 $this->db->from('jobs ');
+		 $this->db->where('id', $id);
+		 $query = $this->db->get();
+		 return $query->row()->bl_number;
+ }
+
+ //get_status_description
+ function get_status_description($id){
+ 		$this->db->select('status');
+ 		$this->db->from('shipment_status ');
+ 		$this->db->where('id', $id);
+ 		$query = $this->db->get();
+ 		return $query->row()->status;
+ }
+
+ function get_job_id_by_children_id($id,$table){
+		 $this->db->select('job_id');
+		 $this->db->from($table);
+		 $this->db->where('id', $id);
+		 $query = $this->db->get();
+		 return $query->row()->job_id;
+ }
 
 
     //-- get sub categories
@@ -197,9 +332,21 @@ class Common_model extends CI_Model {
 
 
 		function get_all_jobs(){
+				$this->db->select('j.id,j.asl_reference_no,j.invoice_number,concat(first_name,\' \',last_name) as customer,m.mission_name,jt.type,CASE WHEN j.sail_date = \'0000-00-00\' THEN NULL ELSE j.sail_date END AS sail_date,CASE WHEN j.eta = \'0000-00-00\' THEN NULL ELSE j.eta END AS eta');
+				$this->db->from('jobs j');
+				$this->db->join('customers c','c.id = j.customer_id');
+				$this->db->join('missions m','m.id = c.mission_id','LEFT');
+				$this->db->join('job_types jt','jt.id = j.job_type_id');
+				$this->db->order_by('j.id', 'DESC');
+				$query = $this->db->get();
+				$query = $query->result_array();
+				return $query;
+		}
+
+		//get_dashboard_jobs
+		function get_dashboard_jobs(){
 				$this->db->select();
-				$this->db->from('jobs');
-				$this->db->order_by('id', 'ASC');
+				$this->db->from('open_jobs');
 				$query = $this->db->get();
 				$query = $query->result_array();
 				return $query;
@@ -219,15 +366,60 @@ class Common_model extends CI_Model {
 		}
 
 
+		function get_all_templates(){
+			$query = $this->db->query('SELECT s.id,s.status,CASE WHEN s.enable_email = 1 THEN \'Y\' ELSE \'N\' END AS \'email\' FROM tboptions o inner join shipment_status s on s.id = o.shipment_staus_id where o.shipment_staus_id <> 0 GROUP BY s.id,s.status,CASE WHEN s.enable_email = 1 THEN \'Y\' ELSE \'N\' END');
+				$query = $query->result_array();
+				return $query;
+		}
+
 		function get_constrain($table,$field,$id)
 		{
 
-			$this->db->select('count(*) as total');
+			$this->db->select('*');
 			$this->db->from($table);
 			$this->db->where($field, $id);
+			$this->db->limit(1);
 			$query = $this->db->get();
-			$rowcount = $query->num_rows();
-			return $rowcount;
+			if($query->num_rows() >= 1) {
+					return true;
+			}else{
+					return false;
+			}
+
+		}
+
+		//invalid_delete_email
+		function invalid_delete_email($id)
+		{
+
+			$this->db->select('*');
+			$this->db->from('email_queue');
+			$this->db->where('id', $id);
+			$this->db->where('sent', '1');
+			$this->db->limit(1);
+			$query = $this->db->get();
+			if($query->num_rows() >= 1) {
+					return true;
+			}else{
+					return false;
+			}
+
+		}
+
+
+		function do_email($id){
+			$this->db->select('*');
+			$this->db->from('shipment_status');
+			$this->db->where('id', $id);
+			$this->db->where('enable_email','1');
+			$this->db->limit(1);
+			$query = $this->db->get();
+			if($query->num_rows() >= 1) {
+					return true;
+			}else{
+					return false;
+			}
+
 
 		}
 
@@ -463,5 +655,35 @@ class Common_model extends CI_Model {
             }
 
     }
+
+		function update_email($id)
+    {
+        $this->db->where('id',$id);
+        //shipment_staus_id
+        $this->db->set('email_from',$this->input->post('email_from'));
+        $this->db->update('email_queue');
+
+				$this->db->where('id',$id);
+        $this->db->set('email_to',$this->input->post('email_to'));
+        $this->db->update('email_queue');
+
+				$this->db->where('id',$id);
+        $this->db->set('subject',$this->input->post('subject'));
+        $this->db->update('email_queue');
+
+				$this->db->where('id',$id);
+        $this->db->set('content',$this->input->post('content'));
+        $this->db->update('email_queue');
+
+    }
+
+		function get_option($Field,$id)
+    {
+         $this->db->where('id',$id);
+         $this->db->select($Field);
+         $result= $this->db->get('email_queue');
+        return $result->row()->$Field;
+    }
+
 
 }

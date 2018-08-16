@@ -64,6 +64,8 @@
     <link href="<?php echo base_url() ?>assets/plugins/bootstrap-daterangepicker/daterangepicker.css" rel="stylesheet">
 
 
+    <link href="<?php echo base_url() ?>assets/plugins/select2/dist/css/select2.min.css" rel="stylesheet">
+
     <!-- Custom CSS -->
     <link href="<?php echo base_url() ?>assets/css/style.css" rel="stylesheet">
     <!-- You can change the theme colors from here -->
@@ -223,10 +225,21 @@
                         </li>
 
                         <li>
+                            <a class="has-arrow waves-effect waves-dark" href="#" aria-expanded="false"><i class="mdi mdi-menu"></i><span class="hide-menu">Jobs</span></a>
+                            <ul aria-expanded="false" class="collapse">
+                                <li><a href="<?php echo base_url('admin/jobs') ?>"><i class="fa fa-angle-right"></i> All Jobs </a></li>
+                                <li><a href="<?php echo base_url('admin/jobs/add') ?>"><i class="fa fa-angle-right"></i> Add New Job</a></li>
+                            </ul>
+                        </li>
+
+                        <li>
                             <a class="has-arrow waves-effect waves-dark" href="#" aria-expanded="false"><i class="mdi mdi-menu"></i><span class="hide-menu">Maintanance</span></a>
                             <ul aria-expanded="false" class="collapse">
                                 <li><a href="<?php echo base_url('admin/doctypes') ?>"><i class="fa fa-angle-right"></i> Document Types </a></li>
                                 <li><a href="<?php echo base_url('admin/statustypes') ?>"><i class="fa fa-angle-right"></i> Status Types </a></li>
+                                <li><a href="<?php echo base_url('admin/jobtypes') ?>"><i class="fa fa-angle-right"></i> Job Types </a></li>
+                                <li><a href="<?php echo base_url('admin/equipmenttypes') ?>"><i class="fa fa-angle-right"></i> Equipment Types </a></li>
+                                <li><a href="<?php echo base_url('admin/mailing_settings') ?>"><i class="fa fa-angle-right"></i> Email Templates </a></li>
                             </ul>
                         </li>
 
@@ -621,6 +634,7 @@
     <script src="<?php echo base_url() ?>assets/plugins/bootstrap-tagsinput/dist/bootstrap-tagsinput.min.js"></script>
     <script src="<?php echo base_url() ?>assets/plugins/bootstrap-touchspin/dist/jquery.bootstrap-touchspin.min.js" type="text/javascript"></script>
     <script type="text/javascript" src="../assets/plugins/multiselect/js/jquery.multi-select.js"></script>
+
     <script>
     jQuery(document).ready(function() {
 

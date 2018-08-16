@@ -13,6 +13,7 @@ class Dashboard extends CI_Controller {
         $data = array();
         $data['page_title'] = 'Dashboard';
         $data['count'] = $this->common_model->get_user_total();
+				$data['jobs'] = $this->common_model->get_dashboard_jobs();
         $data['main_content'] = $this->load->view('admin/home', $data, TRUE);
         $this->load->view('admin/index', $data);
     }

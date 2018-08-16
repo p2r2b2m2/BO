@@ -109,7 +109,7 @@
                                         <label class="control-label text-right col-md-3">Country </label>
                                         <div class="col-md-9 controls">
                                             <div class="form-group has-success">
-                                                <select class="form-control custom-select" name="country" aria-invalid="false">
+                                                <select class="form-control select2" style="width: 100%" name="country" aria-invalid="false">
                                                     <option value="0">Select</option>
                                                     <?php foreach ($country as $cn): ?>
                                                         <option value="<?php echo $cn['id']; ?>"><?php echo $cn['name']; ?></option>

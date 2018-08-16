@@ -10,7 +10,7 @@
         <div class="col-md-5 col-8 align-self-center">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="javascript:void(0)">Home</a></li>
-                <li class="breadcrumb-item active">Edit Item</li>
+                <li class="breadcrumb-item active">Edit Mission</li>
             </ol>
         </div>
 
@@ -34,7 +34,7 @@
 
             <div class="card card-outline-info">
                 <div class="card-header">
-                    <h4 class="m-b-0 text-white"> Edit Item <a href="<?php echo base_url('admin/missions') ?>" class="btn btn-info pull-right"><i class="fa fa-arrow-left"></i> Back</a></h4>
+                    <h5 class="m-b-0 text-white"> Edit Mission <a href="<?php echo base_url('admin/missions') ?>" class="btn btn-info pull-right"><i class="fa fa-arrow-left"></i> Back</a></h4>
                 </div>
                 <div class="card-body">
                     <form method="post" enctype="multipart/form-data" action="<?php echo base_url('admin/missions/edit/'.$mission->id) ?>" class="form-horizontal" novalidate>
@@ -55,7 +55,7 @@
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="form-group row">
-                                        <label class="control-label text-right col-md-2">street </label>
+                                        <label class="control-label text-right col-md-2">Street </label>
                                         <div class="col-md-9 controls">
                                             <input type="text"class="form-control" name="street" value = "<?php echo $mission->street; ?>">
                                         </div>

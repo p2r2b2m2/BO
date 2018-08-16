@@ -10,7 +10,7 @@
         <div class="col-md-5 col-8 align-self-center">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="javascript:void(0)">Home</a></li>
-                <li class="breadcrumb-item active">Add New Item</li>
+                <li class="breadcrumb-item active">Add Mission</li>
             </ol>
         </div>
 
@@ -34,7 +34,7 @@
 
             <div class="card card-outline-info">
                 <div class="card-header">
-                    <h4 class="m-b-0 text-white"> All Mission <a href="<?php echo base_url('admin/missions') ?>" class="btn btn-info pull-right"><i class="fa fa-list"></i> All Missions </a></h4>
+                    <h5 class="m-b-0 text-white"> Add Mission <a href="<?php echo base_url('admin/missions') ?>" class="btn btn-info pull-right"><i class="fa fa-list"></i> All Missions </a></h4>
                 </div>
                 <div class="card-body">
                     <form method="post" enctype="multipart/form-data" action="<?php echo base_url('admin/missions/add') ?>" class="form-horizontal" novalidate>

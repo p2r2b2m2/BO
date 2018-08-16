@@ -48,16 +48,26 @@
                         <table id="example23" class="display nowrap table table-hover table-striped table-bordered" cellspacing="0" width="100%">
                             <thead>
                                 <tr>
+                                    <th>ASL Reference #</th>
+                                    <th>Invoice #</th>
                                     <th>Customer</th>
-                                    <th>booking_number</th>
+                                    <th>Mission</th>
+                                    <th>Job Type</th>
+                                    <th>ETD</th>
+                                    <th>ETA</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
                             <tfoot>
                                 <tr>
-                                    <th>Customer</th>
-                                    <th>booking_number</th>
-                                    <th>Action</th>
+                                  <th>ASL Reference #</th>
+                                  <th>Invoice #</th>
+                                  <th>Customer</th>
+                                  <th>Mission</th>
+                                  <th>Job Type</th>
+                                  <th>ETD</th>
+                                  <th>ETA</th>
+                                  <th>Action</th>
                                 </tr>
                             </tfoot>
 
@@ -65,8 +75,13 @@
                             <?php $i = 1; foreach ($jobs as $job): ?>
 
                                 <tr>
-                                    <td><?php echo $job['customer_id']; ?></td>
-                                    <td><?php echo $job['booking_number']; ?></td>
+                                    <td><?php echo $job['asl_reference_no']; ?></td>
+                                    <td><?php echo $job['invoice_number']; ?></td>
+                                    <td><?php echo $job['customer']; ?></td>
+                                    <td><?php echo $job['mission_name']; ?></td>
+                                    <td><?php echo $job['type']; ?></td>
+                                    <td><?php echo $job['sail_date']; ?></td>
+                                    <td><?php echo $job['eta']; ?></td>
 
 
                                     <td class="text-nowrap">

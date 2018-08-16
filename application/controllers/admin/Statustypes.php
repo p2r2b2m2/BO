@@ -7,6 +7,7 @@ class Statustypes extends CI_Controller {
         parent::__construct();
         check_login_user();
         $this->load->model('common_model');
+        $this->load->model('settings_model');
     }
 
 
@@ -26,13 +27,26 @@ class Statustypes extends CI_Controller {
     {
         if($_POST)
         {
+          if($_POST['enable_email'] == '1')
+          {
+            $template = TRUE;
+          }
+          else {
+            $template = FALSE;
+          }
             $data=array(
                 'status' => $_POST['status'],
                 'enable_email' => $_POST['enable_email'],
                 'active_ind' => 1
             );
             $data = $this->security->xss_clean($data);
-            $this->common_model->insert($data, 'shipment_status');
+            $id = $this->common_model->insert($data, 'shipment_status');
+            if($template)
+            {
+              $this->settings_model->insert($id);
+              $this->session->set_flashdata('msg', 'Status Type and Email Template added Successfully');
+              redirect(base_url('admin/statustypes'));
+            }
             $this->session->set_flashdata('msg', 'Status Type added Successfully');
             redirect(base_url('admin/statustypes'));
          }
@@ -45,12 +59,26 @@ class Statustypes extends CI_Controller {
         if($_POST)
         {
             $id = $_POST['id'];
+            if($_POST['enable_email'] == '1')
+            {
+              $template = TRUE;
+            }
+            else {
+              $template = FALSE;
+            }
+
             $data=array(
                 'status' => $_POST['status'],
                 'enable_email' => $_POST['enable_email']
             );
             $data = $this->security->xss_clean($data);
             $this->common_model->edit_option($data, $id, 'shipment_status');
+            if($template)
+            {
+              $this->settings_model->insert($id);
+              $this->session->set_flashdata('msg', 'Status Type edited and Email Template configured');
+              redirect(base_url('admin/statustypes'));
+            }
             $this->session->set_flashdata('msg', 'Status Type editted Successfully');
             redirect(base_url('admin/statustypes'));
         }
@@ -81,10 +109,10 @@ class Statustypes extends CI_Controller {
 
     public function delete($id)
     {
-       /*if (($this->common_model->get_constrain('items','category_id',$id)) > 0) {
-         $this->session->set_flashdata('error_msg', 'Category Cannot be deleted because of existing items');
+       if (($this->common_model->get_constrain('status_history','status_id',$id))) {
+         $this->session->set_flashdata('error_msg', 'Status Cannot be deleted due to existing history');
          redirect(base_url('admin/category'));
-       }*/
+       }
         $this->common_model->delete($id,'shipment_status');
         echo json_encode(array('st' => 1));
     }

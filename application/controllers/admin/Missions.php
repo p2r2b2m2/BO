@@ -80,10 +80,10 @@ class Missions extends CI_Controller {
 
 		public function delete($id)
     {
-      // if (($this->common_model->get_constrain('customers','mission_id',$id)) > 0) {
-      //   $this->session->set_flashdata('error_msg', 'Missions with customers Cannot be deleted');
-      //   redirect(base_url('admin/missions'));
-      // }
+       if (($this->common_model->get_constrain('customers','mission_id',$id))) {
+         $this->session->set_flashdata('error_msg', 'Missions with customers associated with cannot be deleted');
+         redirect(base_url('admin/missions'));
+       }
         $this->common_model->delete($id,'missions');
 				$this->session->set_flashdata('msg', 'Mission Deleted');
         redirect(base_url('admin/missions'));

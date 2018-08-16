@@ -43,7 +43,7 @@
         <div class="col-md-6">
             <div class="card card-outline-info">
                 <div class="card-header">
-                    <h4 class="m-b-0 text-white"> New Status Type
+                    <h6 class="m-b-0 text-white"> New Status Type
                 </div>
                 <div class="card-body">
                     <form method="post" action="<?php echo base_url('admin/statustypes/add') ?>" class="form-horizontal" novalidate>
@@ -114,7 +114,7 @@
         <div class="col-md-6">
             <div class="card card-outline-info">
                 <div class="card-header">
-                    <h4 class="m-b-0 text-white"> All Status Types</h4>
+                    <h6 class="m-b-0 text-white"> All Status Types</h6>
                 </div>
                 <div class="card-body">
 

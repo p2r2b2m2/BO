@@ -81,12 +81,14 @@ class Doctypes extends CI_Controller {
 
     public function delete($id)
     {
-       /*if (($this->common_model->get_constrain('items','category_id',$id)) > 0) {
-         $this->session->set_flashdata('error_msg', 'Category Cannot be deleted because of existing items');
-         redirect(base_url('admin/category'));
-       }*/
+       if (($this->common_model->get_constrain('job_docs','doc_type_id',$id))) {
+         $this->session->set_flashdata('error_msg', 'Document Type Cannot be deleted because of existing Jobs');
+         redirect(base_url('admin/doctypes'));
+       }
+
         $this->common_model->delete($id,'doc_types');
-        echo json_encode(array('st' => 1));
+        $this->session->set_flashdata('msg', 'Document Type Deleted');
+        redirect(base_url('admin/doctypes'));
     }
 
 }

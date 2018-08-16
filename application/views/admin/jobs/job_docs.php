@@ -25,28 +25,32 @@
         <div class="col-lg-12">
             <div class="card">
                 <div class="card-body">
-                    <h4 class="card-title">Default Tab</h4>
-                    <h6 class="card-subtitle">Use default tab with class <code>nav-tabs & tabcontent-border </code></h6>
+                  <h4 class="card-title">Manage Job</h4>
+                  <h6 class="card-subtitle">Complete all applicable tabs</h6>
                     <!-- Nav tabs -->
                     <ul class="nav nav-tabs">
                     <li class="nav-item">
-                      <a class="nav-link" href="<?php echo base_url('admin/jobs/edit/'.$jobs->id) ?>">Link</a>
+                      <a class="nav-link" href="<?php echo base_url('admin/jobs/edit/'.$jobs->id) ?>">Job Info</a>
                     </li>
                     <li class="nav-item">
-                      <a class="nav-link" href="<?php echo base_url('admin/jobs/edit_job_status/'.$jobs->id) ?>">Link1</a>
+                      <a class="nav-link" href="<?php echo base_url('admin/jobs/shipinfo/'.$jobs->id) ?>">Shipment Info</a>
                     </li>
                     <li class="nav-item">
-                      <a class="nav-link" href="#">Link2</a>
+                      <a class="nav-link" href="<?php echo base_url('admin/jobs/doccontrol/'.$jobs->id) ?>">Doc Control</a>
                     </li>
                     <li class="nav-item">
-                      <a class="nav-link active" href="<?php echo base_url('admin/jobs/job_docs/'.$jobs->id) ?>">Link4</a>
+                      <a class="nav-link active" href="<?php echo base_url('admin/jobs/job_docs/'.$jobs->id) ?>">Doc Upload</a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link" href="<?php echo base_url('admin/jobs/job_status/'.$jobs->id) ?>">Status & Notifications</a>
                     </li>
                   </ul>
                     <!-- Tab panes -->
                     <div class="tab-content tabcontent-border">
                         <div class="tab-pane active" role="tabpanel">
                             <div class="p-20">
-                                <h3>Documentation</h3>
+                                <h6 class="card-subtitle">One upload for each document type is allowed.</h6>
+                                <h6 class="card-subtitle">In case you need to re-upload please delete the existing file first.</h6>
 
 
                                 <div class="row">
@@ -70,7 +74,7 @@
                                     <div class="col-md-6">
                                         <div class="card card-outline-info">
                                             <div class="card-header">
-                                                <h4 class="m-b-0 text-white"> New Upload
+                                                <h6 class="m-b-0 text-white"> New Upload
                                             </div>
                                             <div class="card-body">
                                                 <form method="post" enctype="multipart/form-data" action="<?php echo base_url('admin/jobs/job_docs/'.$jobs->id) ?>" class="form-horizontal" novalidate>
@@ -138,7 +142,7 @@
                                     <div class="col-md-6">
                                         <div class="card card-outline-info">
                                             <div class="card-header">
-                                                <h4 class="m-b-0 text-white"> Uploaded Documents</h4>
+                                                <h6 class="m-b-0 text-white"> Uploaded Documents</h6>
                                             </div>
                                             <div class="card-body">
 
@@ -164,8 +168,6 @@
                                                                 <td><?php echo $row['uploaded_date']; ?></td>
 
                                                                 <td class="text-nowrap">
-
-                                                                    <a data-toggle="modal" data-target="#editModal_<?php echo $row['id'];?>" href="#" data-toggle="tooltip" data-original-title="Edit"> <i class="fa fa-pencil text-success m-r-10"></i> </a>
 
                                                                     <a id="delete" href="<?php echo base_url('admin/jobs/delete_doc/'.$row['id']) ?>"  data-toggle="tooltip" data-original-title="Delete"> <i class="fa fa-trash text-danger m-r-10"></i> </a>
 

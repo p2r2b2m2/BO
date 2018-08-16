@@ -39,7 +39,7 @@
          <?php endif ?>
            <div class="card card-outline-info">
                <div class="card-header">
-                   <h4 class="m-b-0 text-white">Add Customer</h4>
+                   <h6 class="m-b-0 text-white">Add Customer</h6>
                </div>
                <div class="card-body">
                    <form method="post" enctype="multipart/form-data" action="<?php echo base_url('admin/customers/add') ?>" >
@@ -67,7 +67,7 @@
                                <div class="col-md-6">
                                    <div class="form-group has-success">
                                        <label class="control-label">Mission</label>
-                                       <select class="form-control" name="mission_id">
+                                       <select class="form-control select2" style="width: 100%" name="mission_id">
 
                                            <?php foreach ($missions as $mission): ?>
                                                <option  value="<?php echo $mission['id']; ?>"><?php echo $mission['mission_name']; ?></option>
@@ -138,7 +138,7 @@
                                <div class="col-md-6">
                                    <div class="form-group">
                                        <label>Country</label>
-                                       <select class="form-control custom select" name="country_id">
+                                       <select class="form-control select2" style="width: 100%" name="country_id">
 
                                            <?php foreach ($country as $cn): ?>
 
