@@ -163,7 +163,7 @@
                             <div class="row">
                               <div class="col-md-4 controls">
                                   <div class="form-group">
-                                      <label class="control-label">BL Number</label>
+                                      <label class="control-label">BL Number <a href="<?php echo base_url('admin/jobs/edit_bl/'.$jobs->id) ?>" data-toggle="tooltip" data-original-title="Create/Edit BL"> <i class="fa fa-folder-open text-info m-r-10"></i> </a></label>
                                       <div class="controls">
                                          <input type="text" name="bl_number" class="form-control" value="<?php echo $jobs->bl_number; ?>">
                                        </div>

@@ -32,7 +32,7 @@ class User extends CI_Controller {
                 'password' => md5($_POST['password']),
                 'mobile' => $_POST['mobile'],
                 'country' => $_POST['country'],
-                'status' => $_POST['status'],
+                'status' => '1',
                 'role' => $_POST['role'],
                 'created_at' => current_datetime()
             );

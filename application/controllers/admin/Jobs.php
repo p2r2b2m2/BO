@@ -87,6 +87,9 @@ class Jobs extends CI_Controller {
 
 					$id3 = $this->common_model->insert($data3, 'doc_control');
 
+					//add a placeholder BL template_mail
+					$this->common_model->insert_bl_template($id);
+
 
 				//-- Create a document upload folder for this job
 						$upload_path = './uploads/job_docs/'.$id;
@@ -435,6 +438,132 @@ class Jobs extends CI_Controller {
 
 		}
 
+		public function edit_bl($id)
+		{
+
+		//	$jobid = $this->common_model->get_job_id_by_children_id($id,'email_queue');
+
+			if ($_POST) {
+				$this->common_model->update_bl($id);
+				$this->session->set_flashdata('msg', 'BL Doc changes saved');
+				redirect(base_url('admin/jobs/edit_bl/'.$id));
+		  	}
+
+					$data['id'] = $id;
+					$data['generated_ind'] = $this->common_model->get_bl_content('generated_ind',$id);
+					$data['content'] = $this->common_model->get_bl_content('content',$id);
+					$data['main_content'] = $this->load->view('admin/jobs/edit_bl', $data, TRUE);
+					$this->load->view('admin/index', $data);
+		}
+
+		public function edit_bl_data_from_db($id)
+		{
+
+		$content = $this->common_model->get_bl_content('content',$id);
+
+		//Replace the key words with dynamic data
+		$data_map = array(
+				'[[COMPANY_NAME]]' => 'AIR SEA LAND SHIPPING AND MOVING INC.'
+		);
+
+		$content = str_replace(array_keys($data_map), array_values($data_map), $content);
+
+		$data = array(
+				'content' => $content,
+				'generated_ind' => '1'
+		);
+
+		$this->common_model->update_with_job_id($data,$id,'bl_generation');
+		$this->session->set_flashdata('msg', 'Document refreshed from database');
+		redirect(base_url('admin/jobs/edit_bl/'.$id));
+		}
+
+		//bl_refresh_copy
+		public function bl_refresh_copy($id)
+		{
+
+		$master_bl_id = 0;
+
+		$content = $this->common_model->get_bl_content('content',$master_bl_id);
+
+		$data = array(
+				'content' => $content,
+				'generated_ind' => '0'
+		);
+
+		$this->common_model->update_with_job_id($data,$id,'bl_generation');
+		$this->session->set_flashdata('msg', 'Document refreshed with master copy');
+		redirect(base_url('admin/jobs/edit_bl/'.$id));
+		}
+
+
+		public function create_bl($id)
+		{
+			//if((isset($_POST['content'])) && (!empty(trim($_POST['content'])))) //if content of CKEditor ISN'T empty
+		//	{
+				$posted_editor = $this->common_model->get_bl_content('content',$id);//$_POST['content']; //get content of CKEditor
+				$path = './uploads/job_docs/'.$id.'/BL.pdf'; //specify the file save location and the file name
+
+
+				$pdf = new \Mpdf\Mpdf(['format' => 'A3']);
+			//	define('_MPDF_TTFONTDATAPATH', sys_get_temp_dir()."/");
+				$pdf->WriteHTML($posted_editor);
+				$pdf->Output($path,'F');
+				$url = 'uploads/job_docs/'.$id.'/BL.pdf';
+				$data = array(
+						'job_id' => $id,
+						'doc_type_id' => $this->common_model->get_doc_id_bl(),
+						'url' => $url,
+						'file_name' => 'BL.pdf',
+						'uploaded_by' => $this->session->userdata('email'),
+						'uploaded_date' => current_datetime()
+				);
+
+				$data = $this->security->xss_clean($data);
+				$this->common_model->insert($data,'job_docs');
+				$this->session->set_flashdata('msg', 'BL created and uploaded');
+				redirect(base_url('admin/jobs/job_docs/'.$id));
+		//	}
+
+	}
+
+	function exportPDF($text,$path)
+	{
+		try
+		{
+			$pdf = new \Mpdf\Mpdf(['format' => 'A3']);
+			$pdf->WriteHTML($text);
+			$pdf->Output($path,'F'); //$pdf->Output('../files/example.pdf','F');
+
+			return true;
+		}
+		catch(Exception $e)
+		{
+			return false;
+		}
+	}
+		//create_bl
+		public function create_bl_1($id)
+		{
+
+			$mpdf = new \Mpdf\Mpdf(['format' => 'A3']);
+			$mpdf->use_kwt = true;
+
+			$html = $this->common_model->get_bl_content('content',$id);
+			$mpdf->use_kwt = true;
+			$mpdf->WriteHTML($html);
+			$mpdf->Output(); // opens in browser
+			$mpdf->Output('arjun.pdf','D'); // it downloads the file into the user system, with give name
+
+
+		//	$this->common_model->update_with_job_id($data,$id,'bl_generation');
+		 // $this->session->set_flashdata('msg', 'BL created and uploaded');
+		//	redirect(base_url('admin/jobs/job_docs/'.$id));
+		}
+
+
+
+
 
 
 
@@ -585,6 +714,109 @@ public function delete_email_queue($id)
 		$this->session->set_flashdata('msg', 'Email Deleted');
 		redirect(base_url('admin/jobs/job_status/'.$jobid));
 }
+
+public function bl_test()
+	{
+		$mpdf = new \Mpdf\Mpdf(['format' => 'A3']);
+		$mpdf->use_kwt = true;
+		$html = '<title></title>
+		<meta http-equiv="content-type" content="text/html; charset=utf-8">
+		<div class="container" style="min-width: 245px;max-width: 1920px;position: relative;padding: 10px;border: 1px dotted #ddd;background-color: #eee;">
+		<div class="header" style="border: 1px dotted #ddd;min-height: 800px;border-radius: 5px 5px 0 0;background-color: #fff;padding: 10px 0;">
+		<h3 dir="ltr" style="text-align: center;">&nbsp; &nbsp; &nbsp;<strong><span style="font-size:16px;"> </span><span style="color:#0000FF;"><span style="font-size:14px;">AIR SEA LAND SHIPPING &amp; MOVING INC.</span><span style="font-size:16px;">&nbsp; </span>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span style="font-size:12px;">BILL OF LADING</span></span></strong></h3>
+
+		<h5 dir="ltr" style="text-align: center;"><span style="font-size:12px;"><font color="#0000ff"><b>FMC-OTI No.024377NF&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;FOR PORT-TO-PORT OR COMBINED TRANSPORT</b></font></span></h5>
+		<style type="text/css">.tg  {border-collapse:collapse;border-spacing:0;}
+		.tg td{font-family:Arial, sans-serif;border-left:none;border-right: none;font-size:14px;padding: 0px 2px;border-style:solid;border-width:1px;overflow:hidden;word-break:normal;border-color:black;}
+		.tg th{font-family:Arial, sans-serif;border-left:none;border-right: none;font-size:14px;font-weight:normal;padding:0px 2px;border-style:solid;border-width:1px;overflow:hidden;word-break:normal;border-color:black;}
+		.tg .tg-cpu2{border-color:#000000;vertical-align:top}
+		.tg .tg-us36{border-color:inherit;vertical-align:top}
+		@media screen and (max-width: 767px) {.tg {width: auto !important;}.tg col {width: auto !important;}.tg-wrap {overflow-x: auto;-webkit-overflow-scrolling: touch;}}
+		</style>
+		<div class="tg-wrap">
+		<table align="center" border="0" cellpadding="0" class="tg" dir="ltr" style="height:500px;width:800px;">
+			<tbody>
+				<tr>
+					<td class="tg-cpu2" colspan="2" rowspan="2">
+					<p><span style="font-size:10px;"><strong><span style="color:#0000FF;">SHIPPER</span></strong></span><br />
+					<span style="font-size:10px;"><strong>AIR SEA LAND SHIPPING &amp;MOVING INC<br />
+					AS AGENT FOR MR. IMMANUEL HAMUNYELA<br />
+					211 EAST 43RD ST, SUIT # 1206<br />
+					NEW YORK, NY 10017</strong></span></p>
+					</td>
+					<td class="tg-us36">
+					<p><strong style="font-family: Arial, sans-serif; font-size: 14px;"><span style="font-size:10px;"><span style="color: rgb(0, 0, 255);">REFERENCE<span style="font-size: 12px;"><span style="color: rgb(0, 0, 255);"> </span></span>NO</span></span><span style="font-size: 12px;"><span style="color: rgb(0, 0, 255);">.</span></span></strong><br />
+					<span style="font-size:10px;"><strong>003570-00</strong></span></p>
+					</td>
+					<td class="tg-us36">
+					<p><strong style="font-family: Arial, sans-serif; font-size: 14px;"><span style="font-size:10px;"><span style="color: rgb(0, 0, 255);">CARRIER BOOKING<span style="font-size: 12px;"><span style="color: rgb(0, 0, 255);"> </span></span>NO.</span></span></strong><br />
+					<span style="font-size:10px;"><strong>965840633</strong></span></p>
+					</td>
+				</tr>
+				<tr>
+					<td class="tg-us36" colspan="2">
+					<p><span style="font-size:10px;"><font color="#0000ff"><b>EXPORT REFERENCES</b></font></span><br />
+					<span style="font-size:10px;"><strong>003570-00</strong></span></p>
+					</td>
+				</tr>
+				<tr>
+					<td class="tg-us36" colspan="2" rowspan="2">
+					<p><strong style="font-family: Arial, sans-serif; font-size: 14px;"><span style="font-size:10px;"><span style="color: rgb(0, 0, 255);">CONSIGNEE - ( NOT NEOTIABLE UNLESS CONSIGNED TO<span style="font-size: 12px;"><span style="color: rgb(0, 0, 255);"> </span></span>ORDER)</span></span></strong><br />
+					<span style="font-size:10px;"><strong>MR.&nbsp;&nbsp;</strong><span style="font-family: Arial, sans-serif;"><strong>IMMANUEL HAMUNYELA<br />
+					C/O STUTTSFOED VAN LINES<br />
+					7-9 DANZING STREET<br />
+					LAFRENZ, WINDHOEK NAMIBIA<br />
+					TEL : 264 61 22 4691</strong></span></span></p>
+					</td>
+					<td class="tg-us36" colspan="2"><b style="color: rgb(0, 0, 255); font-family: Arial, sans-serif; font-size: 12px;"><span style="font-size:10px;">FORWARDING AGENT</span> - <span style="font-size:10px;">Reference</span></b><br />
+					<strong style="font-family: Arial, sans-serif; font-size: 10px;">003570-00</strong></td>
+				</tr>
+				<tr>
+					<td class="tg-us36" colspan="2"><span style="font-size:10px;"><font color="#0000ff"><b>POINT AND COUNTRY OF ORIGIN</b></font></span><br />
+					<span style="font-size: 10px;"><b>UNITED STATES OF AMERICA</b></span></td>
+				</tr>
+				<tr>
+					<td class="tg-us36" colspan="2" rowspan="2"><span style="font-size:10px;"><font color="#0000ff"><b>NOTIFY PARTY</b></font></span><br />
+					<b style="font-family: Arial, sans-serif; font-size: 10px;">WORLD NET LOGISTICS (PTY) LTD<br />
+					LANGER HEINRICH STREET, SAPHIER PARK UNIT 8 , NEW INDUS TRAIL AREA<br />
+					WALVIS BAY NAMIBIA.<br />
+					EMAIL: EXAMPLE@ONE.COM<br />
+					TEL: 2245666552</b></td>
+					<td class="tg-us36" colspan="2" rowspan="2"><b style="color: rgb(0, 0, 255); font-family: Arial, sans-serif; font-size: 12px;"><span style="font-size:10px;">ALSO NOTIFY - ROUTING</span> <span style="font-size:10px;">INSTRUCTIONS</span></b></td>
+				</tr><tr><span style="color:#0000FF;"></span></tr>
+				<tr>
+					<td class="tg-us36"><span style="font-size:10px;"><font color="#0000ff"><b>PIER</b></font></span></td>
+					<td class="tg-us36"><span style="font-size:10px;"><font color="#0000ff"><b>PLACE OF RECEIPT by PRE-CARRIER</b></font></span></td>
+					<td class="tg-us36" colspan="2" rowspan="3"><span style="font-size:10px;"><font color="#0000ff"><b>RELEASE AGENT</b></font></span></td>
+				</tr>
+				<tr>
+					<td class="tg-us36"><span style="font-size:10px;"><font color="#0000ff"><b>VESSEL AND VOYAGE NUMBER</b></font></span><br />
+					<span style="font-size: 10px;"><b>CONTI EVEREST 832E</b></span></td>
+					<td class="tg-us36"><span style="font-size:10px;"><font color="#0000ff"><b>PORT OF LOADING</b></font></span><br />
+					<span style="font-size: 10px;"><b>NEWARK</b></span></td>
+				</tr>
+				<tr>
+					<td class="tg-us36"><span style="font-size:10px;"><font color="#0000ff"><b>PORT OF DISCHARGE</b></font></span><br />
+					<span style="font-size: 10px;"><b>WALVIS BAY, NAMIBIA</b></span></td>
+					<td class="tg-us36"><span style="font-size:10px;"><font color="#0000ff"><b>PLACE OF DELIVERY</b></font></span><br />
+					<b style="font-family: Arial, sans-serif; font-size: 10px;">WALVIS BAY, NAMIBIA</b></td>
+				</tr>
+			</tbody>
+		</table>
+		</div>
+
+		<p dir="ltr">&nbsp;</p>
+
+		<p dir="ltr">&nbsp;</p>
+		</div>
+
+		<p dir="ltr" style="text-align: center;"><span style="font-size: 12px;"><b>www.airsealandinc.net</b></span></p>
+		</div>';
+		$mpdf->use_kwt = true;
+		$mpdf->WriteHTML($html);
+		$mpdf->Output(); // opens in browser
+	//	$mpdf->Output('arjun.pdf','D'); // it downloads the file into the user system, with give name
+	}
 
 
 

@@ -296,6 +296,14 @@ function get_equipment_types(){
 		 return $query->row()->job_id;
  }
 
+ function get_doc_id_bl(){
+		 $this->db->select('id');
+		 $this->db->from('doc_types ');
+		 $this->db->where('type', 'BOL');
+		 $query = $this->db->get();
+		 return $query->row()->id;
+ }
+
 
     //-- get sub categories
     function get_sub_categories(){
@@ -684,6 +692,41 @@ function get_equipment_types(){
          $result= $this->db->get('email_queue');
         return $result->row()->$Field;
     }
+
+		//get_bl_content
+
+		function get_bl_content($Field,$id)
+		{
+				 $this->db->where('job_id',$id);
+				 $this->db->select($Field);
+				 $result= $this->db->get('bl_generation');
+				return $result->row()->$Field;
+		}
+
+		function update_bl($id)
+    {
+				$this->db->where('job_id',$id);
+        $this->db->set('content',$this->input->post('content',FALSE));
+        $this->db->update('bl_generation');
+
+    }
+
+
+		function insert_bl_template($id)
+    {
+      $sql = 'INSERT INTO bl_generation (job_id,content)
+      select '.$id.',content
+      from bl_generation
+      where job_id = 0
+      and NOT EXISTS(
+      select job_id,content  from bl_generation where job_id= '.$id.')
+      LIMIT 1';
+      $this->db->query($sql);
+
+    }
+
+
+
 
 
 }
