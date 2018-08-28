@@ -54,16 +54,16 @@
                       <a class="nav-link active" href="<?php echo base_url('admin/jobs/edit/'.$jobs->id) ?>">Job Info</a>
                     </li>
                     <li class="nav-item">
-                      <a class="nav-link" href="<?php echo base_url('admin/jobs/shipinfo/'.$jobs->id) ?>">Shipment Info</a>
+                      <a class="nav-link" href="<?php echo base_url('admin/jobs/shipinfo/'.$jobs->id) ?>">Shipment</a>
                     </li>
                     <li class="nav-item">
                       <a class="nav-link" href="<?php echo base_url('admin/jobs/doccontrol/'.$jobs->id) ?>">Doc Control</a>
                     </li>
                     <li class="nav-item">
-                      <a class="nav-link " href="<?php echo base_url('admin/jobs/job_docs/'.$jobs->id) ?>">Doc Upload</a>
+                      <a class="nav-link " href="<?php echo base_url('admin/jobs/job_docs/'.$jobs->id) ?>">Uploads</a>
                     </li>
                     <li class="nav-item">
-                      <a class="nav-link" href="<?php echo base_url('admin/jobs/job_status/'.$jobs->id) ?>">Status & Notifications</a>
+                      <a class="nav-link" href="<?php echo base_url('admin/jobs/job_status/'.$jobs->id) ?>">Status</a>
                     </li>
                   </ul>
                     <!-- Tab panes -->
@@ -136,7 +136,7 @@
                                     <div class="form-group">
                                         <label class="control-label">ASL Reference#</label>
                                         <input type="text" name="asl_reference_no" class="form-control" placeholder="" value="<?php echo $jobs->asl_reference_no; ?>"readonly>
-                                        <small class="form-control-feedback"> Will be generated when the job is created.</small>
+                                        <small class="form-control-feedback"></small>
                                       </div>
                                 </div>
 
@@ -145,7 +145,7 @@
                             </div>
                             <!--/row-->
                             <div class="row">
-                                <div class="col-md-6">
+                                <div class="col-md-4">
                                     <div class="form-group">
                                         <label class="control-label">Invoice Number</label>
                                         <div class="controls">
@@ -155,8 +155,17 @@
                                 </div>
                                 <!--/span-->
 
-                                <div class="col-md-2">
-
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                      <?php if ($jobs->uploaded == 0): ?>
+                                          <label class="control-label">HBL Number <a href="<?php echo base_url('admin/jobs/edit_hbl/'.$jobs->id) ?>" data-toggle="tooltip" data-original-title="Create/Edit HBL">&nbsp;  <i class="fa fa-folder-open text-info m-r-10 fa-lg"></i> </a></label>
+                                      <?php else: ?>
+                                         <label class="control-label">HBL Number <a href="#" data-toggle="tooltip" data-original-title="HBL generated and available under upload tab"> &nbsp; <i class="fa fa-check-circle text-info m-r-10 fa-lg"></i> </a></label>
+                                      <?php endif ?>
+                                        <div class="controls">
+                                           <input type="text" name="hbl_number" class="form-control" value="<?php echo $jobs->hbl_number; ?>">
+                                         </div>
+                                      </div>
                                 </div>
 
                                 <div class="col-md-4">

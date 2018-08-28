@@ -5,6 +5,7 @@ class Customers extends CI_Controller {
 	public function __construct(){
         parent::__construct();
         check_login_user();
+				check_employee();
         $this->load->model('common_model');
         $this->load->model('login_model');
     }
@@ -16,6 +17,7 @@ class Customers extends CI_Controller {
         $data['page_title'] = 'Customers';
         $data['customers'] = $this->common_model->get_all_customers();
         $data['main_content'] = $this->load->view('admin/customers/all_customers', $data, TRUE);
+				$data['recentjobs'] = $this->common_model->recent_jobs($this->session->userdata('id'));
         $this->load->view('admin/index', $data);
     }
 
@@ -60,6 +62,7 @@ class Customers extends CI_Controller {
 				$data['missions'] = $this->common_model->select_missions('missions','id');
 				$data['country'] = $this->common_model->select_country('country');
 				$data['main_content'] = $this->load->view('admin/customers/add_customer', $data, TRUE);
+				$data['recentjobs'] = $this->common_model->recent_jobs($this->session->userdata('id'));
 				$this->load->view('admin/index', $data);
 		}
 
@@ -94,6 +97,7 @@ class Customers extends CI_Controller {
 				$data['country'] = $this->common_model->select_country('country');
 				$data['missions'] = $this->common_model->select_missions('missions','id');
 				$data['main_content'] = $this->load->view('admin/customers/edit_customer', $data, TRUE);
+				$data['recentjobs'] = $this->common_model->recent_jobs($this->session->userdata('id'));
 				$this->load->view('admin/index', $data);
 
 		}

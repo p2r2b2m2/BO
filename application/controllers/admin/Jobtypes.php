@@ -6,6 +6,7 @@ class Jobtypes extends CI_Controller {
     {
         parent::__construct();
         check_login_user();
+        check_employee();
         $this->load->model('common_model');
     }
 
@@ -18,6 +19,7 @@ class Jobtypes extends CI_Controller {
         $data['page_title'] = 'Job Types';
         $data['jobtypes'] = $this->common_model->get_job_types();
         $data['main_content'] = $this->load->view('admin/job_types/job_types',$data,TRUE);
+        $data['recentjobs'] = $this->common_model->recent_jobs($this->session->userdata('id'));
         $this->load->view('admin/index',$data);
     }
 

@@ -23,7 +23,7 @@
     });
 
 </script>
-
+<div class="container-fluid">
 <div class="row">
     <div class="col-lg-12">
       <?php $msg = $this->session->flashdata('msg'); ?>
@@ -43,42 +43,37 @@
 </div>
 <div class="row">
 
-    <div class="col-sm-9 col-sm-offset-3 col-md-6 col-md-offset-2 main">
-        <h4 class="page-header">Edit Master Template</h4>
+    <div class="col-sm-10 col-sm-offset-3 col-md-9 col-md-offset-2 main">
+        <h4 class="page-header">Edit HBL </h4>
 
-        <?= form_open_multipart(base_url('admin/mailing_settings/edit/'.$id), array('class' => 'form-horizontal')) ?>
+        <?= form_open_multipart(base_url('admin/jobs/edit_hbl/'.$id), array('class' => 'form-horizontal')) ?>
 
-
-
-        <div class="form-group">
-            <label class="control-label" for="activation_mail">Template From Mail</label>
-            <input type="text" name="activation_mail" class="form-control" value="<?= set_value('activation_mail', $activation_mail) ?>"
-                   placeholder="activation_mail">
-
-            <p class="text-red"><?= form_error('activation_mail'); ?></p>
-        </div>
 
         <div class="form-group">
-            <label class="control-label" for="activation_subject">Template Subject</label>
-            <input type="text" name="activation_subject" class="form-control"  value="<?= set_value('activation_subject', $activation_subject) ?>"
-                   placeholder="activation_subject">
-
-            <p class="text-red"><?= form_error('activation_subject'); ?></p>
+            <label class="control-label" for="activation_content">Content</label>
+            <textarea  rows="20" cols="50" id="textEditor" name="content" class="form-control"
+                                           placeholder="activation_content"><?= set_value('content',$content) ?></textarea>
+            <p class="text-red"><?= form_error('content'); ?></p>
         </div>
 
-        <div class="form-group">
-            <label class="control-label" for="activation_content">Template Content</label>
-            <textarea  rows="5" cols="30" id="textEditor" name="activation_content" class="form-control"
-                                           placeholder="activation_content"><?= set_value('activation_content',$activation_content) ?></textarea>
-            <p class="text-red"><?= form_error('activation_content'); ?></p>
-        </div>
+        <input class="btn btn-primary" type="submit" name="save" value="Save Changes"/>
 
-        <input class="btn btn-primary" type="submit" name="save" value="Edit mail template"/>
+        <a class="btn btn-success" href="<?= base_url('admin/jobs/create_hbl/'.$id) ?>">Generate HBL</a>
 
-        <a class="btn btn-info" href="<?= base_url('admin/mailing_settings/send_mail/'.$id) ?>">Send Test Email</a>
+        <a class="btn btn-info" href="<?= base_url('admin/jobs/job_docs/'.$id) ?>">Go To DOC Upload</a>
+
+        <a href="<?php echo base_url('admin/jobs/edit_hbl_data_from_db/'.$id) ?>" class="pull-right" data-toggle="tooltip" data-original-title="Get Content From Database"> <i class="fa fa-database  text-info m-r-10 fa-2x"></i> </a>
+
+        <a href="<?php echo base_url('admin/jobs/hbl_refresh_copy/'.$id) ?>" class="pull-right" data-toggle="tooltip" data-original-title="Erase and Download a Fresh Copy"> <i class="fa fa-eraser  text-info m-r-10 fa-2x"></i> </a>
+
+
+
+
+
 
         <?php echo form_close(); ?>
     </div>
+</div>
 </div>
 
 <script src="<?= base_url()?>global/bootstrap/assets/js/vendor/holder.min.js"></script>

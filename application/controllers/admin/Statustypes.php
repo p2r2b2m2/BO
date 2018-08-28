@@ -6,6 +6,7 @@ class Statustypes extends CI_Controller {
     {
         parent::__construct();
         check_login_user();
+        check_employee();
         $this->load->model('common_model');
         $this->load->model('settings_model');
     }
@@ -19,6 +20,7 @@ class Statustypes extends CI_Controller {
         $data['page_title'] = 'Status Types';
         $data['statustypes'] = $this->common_model->get_status_types();
         $data['main_content'] = $this->load->view('admin/status_types/status_types',$data,TRUE);
+        $data['recentjobs'] = $this->common_model->recent_jobs($this->session->userdata('id'));
         $this->load->view('admin/index',$data);
     }
 
@@ -111,10 +113,11 @@ class Statustypes extends CI_Controller {
     {
        if (($this->common_model->get_constrain('status_history','status_id',$id))) {
          $this->session->set_flashdata('error_msg', 'Status Cannot be deleted due to existing history');
-         redirect(base_url('admin/category'));
+         redirect(base_url('admin/statustypes'));
        }
         $this->common_model->delete($id,'shipment_status');
-        echo json_encode(array('st' => 1));
+        $this->session->set_flashdata('msg', 'Status type deleted');
+        redirect(base_url('admin/statustypes'));
     }
 
 }

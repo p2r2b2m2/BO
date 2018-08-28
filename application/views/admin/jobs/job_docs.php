@@ -10,7 +10,7 @@
         <div class="col-md-5 col-8 align-self-center">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="javascript:void(0)">Home</a></li>
-                <li class="breadcrumb-item active">Edit Job</li>
+                <li class="breadcrumb-item active">Document Uploads</li>
             </ol>
         </div>
 
@@ -33,16 +33,16 @@
                       <a class="nav-link" href="<?php echo base_url('admin/jobs/edit/'.$jobs->id) ?>">Job Info</a>
                     </li>
                     <li class="nav-item">
-                      <a class="nav-link" href="<?php echo base_url('admin/jobs/shipinfo/'.$jobs->id) ?>">Shipment Info</a>
+                      <a class="nav-link" href="<?php echo base_url('admin/jobs/shipinfo/'.$jobs->id) ?>">Shipment</a>
                     </li>
                     <li class="nav-item">
                       <a class="nav-link" href="<?php echo base_url('admin/jobs/doccontrol/'.$jobs->id) ?>">Doc Control</a>
                     </li>
                     <li class="nav-item">
-                      <a class="nav-link active" href="<?php echo base_url('admin/jobs/job_docs/'.$jobs->id) ?>">Doc Upload</a>
+                      <a class="nav-link active" href="<?php echo base_url('admin/jobs/job_docs/'.$jobs->id) ?>">Uploads</a>
                     </li>
                     <li class="nav-item">
-                      <a class="nav-link" href="<?php echo base_url('admin/jobs/job_status/'.$jobs->id) ?>">Status & Notifications</a>
+                      <a class="nav-link" href="<?php echo base_url('admin/jobs/job_status/'.$jobs->id) ?>">Status</a>
                     </li>
                   </ul>
                     <!-- Tab panes -->

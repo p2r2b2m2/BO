@@ -150,6 +150,47 @@ class Common_model extends CI_Model {
 				return $query;
 		}
 
+		function get_info_bl_template($id){
+				$this->db->select();
+				$this->db->from('v_bl_template');
+				$this->db->where('id', $id);
+				$query = $this->db->get();
+				$query = $query->row();
+				return $query;
+		}
+
+		function get_info_hbl_template($id){
+				$this->db->select();
+				$this->db->from('v_hbl_template');
+				$this->db->where('id', $id);
+				$query = $this->db->get();
+				$query = $query->row();
+				return $query;
+		}
+
+
+//get_ship_info
+		function get_ship_info($id){
+			$this->db->select('j.*, bl.uploaded');
+			$this->db->from('jobs j');
+			$this->db->join('bl_generation bl', 'bl.job_id = j.id');
+			$this->db->where('j.id', $id);
+			$query = $this->db->get();
+			$query = $query->row();
+			return $query;
+		}
+
+		//get_job_info
+		function get_job_info($id){
+			$this->db->select('j.*, bl.uploaded');
+			$this->db->from('jobs j');
+			$this->db->join('hbl_generation bl', 'bl.job_id = j.id');
+			$this->db->where('j.id', $id);
+			$query = $this->db->get();
+			$query = $query->row();
+			return $query;
+		}
+
 
 
 		function get_jdocs_by_id($id,$table){
@@ -191,6 +232,18 @@ class Common_model extends CI_Model {
 				$query = $query->result_array();
 				return $query;
 		}
+
+		//get_template_type
+		function get_template_type($id){
+			$this->db->select('dt.*');
+			$this->db->from('job_docs jd');
+			$this->db->join('doc_types dt', 'dt.id = jd.doc_type_id');
+			$this->db->where('jd.id', $id);
+			$query = $this->db->get();
+			$query = $query->row();
+			return $query;
+		}
+
 
 
 
@@ -250,6 +303,19 @@ function get_equipment_types(){
 				return $query;
 		}
 
+		function get_equeue_all(){
+				$this->db->select('e.*,h.comment,s.status,j.asl_reference_no');
+				$this->db->from('status_history h');
+				$this->db->join('email_queue e', 'e.status_history_id = h.id');
+				$this->db->join('shipment_status s', 's.id = h.status_id');
+				$this->db->join('jobs j', 'j.id = h.job_id');
+				$this->db->where('e.sent', 0);
+				$this->db->order_by('e.sent', 'ASC');
+				$query = $this->db->get();
+				$query = $query->result_array();
+				return $query;
+		}
+
 	//	get_customer_email_by_job
 	function get_customer_email_by_job($id){
 			$this->db->select('c.email');
@@ -296,10 +362,10 @@ function get_equipment_types(){
 		 return $query->row()->job_id;
  }
 
- function get_doc_id_bl(){
+ function get_doc_id_bl($doctype){
 		 $this->db->select('id');
-		 $this->db->from('doc_types ');
-		 $this->db->where('type', 'BOL');
+		 $this->db->from('doc_types');
+		 $this->db->where('type', $doctype);
 		 $query = $this->db->get();
 		 return $query->row()->id;
  }
@@ -350,6 +416,46 @@ function get_equipment_types(){
 				$query = $query->result_array();
 				return $query;
 		}
+
+		function get_jobs_in_water(){
+
+			 $sql = 'SELECT * FROM open_jobs where type = \'Ocean Export\' and sail_date <=CURRENT_DATE';
+			 $query = $this->db->query($sql);
+			 $query = $query->result_array();
+			 return $query;
+	 }
+
+	 //get_new_jobs WHERE create_date >= DATE_SUB( CURDATE( ) , INTERVAL 30 DAY )
+	 function get_new_jobs(){
+			 $this->db->select('j.id,j.asl_reference_no,j.invoice_number,concat(first_name,\' \',last_name) as customer,m.mission_name,jt.type,CASE WHEN j.sail_date = \'0000-00-00\' THEN NULL ELSE j.sail_date END AS sail_date,CASE WHEN j.eta = \'0000-00-00\' THEN NULL ELSE j.eta END AS eta');
+			 $this->db->from('jobs j');
+			 $this->db->join('customers c','c.id = j.customer_id');
+			 $this->db->join('missions m','m.id = c.mission_id','LEFT');
+			 $this->db->join('job_types jt','jt.id = j.job_type_id');
+			 $this->db->where('create_date >= DATE_SUB( CURDATE( ) , INTERVAL 30 DAY )');
+			 $this->db->order_by('j.id', 'DESC');
+			 $query = $this->db->get();
+			 $query = $query->result_array();
+			 return $query;
+	 }
+
+	 //get_bl_pending_jobs
+	 //'INNER JOIN bl_generation bl ON bl.job_id = j.id AND jt.type = \'Ocean Export\' AND bl.uploaded = 0';
+	 function get_bl_pending_jobs(){
+			 $this->db->select('j.id,j.asl_reference_no,j.invoice_number,concat(first_name,\' \',last_name) as customer,m.mission_name,jt.type,CASE WHEN j.sail_date = \'0000-00-00\' THEN NULL ELSE j.sail_date END AS sail_date,CASE WHEN j.eta = \'0000-00-00\' THEN NULL ELSE j.eta END AS eta');
+			 $this->db->from('jobs j');
+			 $this->db->join('customers c','c.id = j.customer_id');
+			 $this->db->join('missions m','m.id = c.mission_id','LEFT');
+			 $this->db->join('job_types jt','jt.id = j.job_type_id');
+			 $this->db->join('bl_generation bl','bl.job_id = j.id');
+			 $this->db->where('jt.type','Ocean Export');
+			 $this->db->where('jt.type','Ocean Export');
+			 $this->db->order_by('bl.uploaded', 0);
+			 $query = $this->db->get();
+			 $query = $query->result_array();
+			 return $query;
+	 }
+
 
 		//get_dashboard_jobs
 		function get_dashboard_jobs(){
@@ -695,35 +801,117 @@ function get_equipment_types(){
 
 		//get_bl_content
 
-		function get_bl_content($Field,$id)
+		function get_bl_content($Field,$id,$table)
 		{
 				 $this->db->where('job_id',$id);
 				 $this->db->select($Field);
-				 $result= $this->db->get('bl_generation');
+				 $result= $this->db->get($table);
 				return $result->row()->$Field;
 		}
 
-		function update_bl($id)
+		function update_bl($id,$table)
     {
 				$this->db->where('job_id',$id);
         $this->db->set('content',$this->input->post('content',FALSE));
-        $this->db->update('bl_generation');
+        $this->db->update($table);
 
     }
 
+		function reset_template_table($id,$table)
+		{
+			$this->db->where('job_id',$id);
+			$this->db->set('generated_ind','0');
+			$this->db->set('uploaded','0');
+			$this->db->set('manually_uploaded','0');
+			$this->db->update($table);
+		}
 
-		function insert_bl_template($id)
+		//set_template_table_manual_upload
+		function set_template_table_manual_upload($id,$table)
+		{
+			$this->db->where('job_id',$id);
+			$this->db->set('generated_ind','0');
+			$this->db->set('uploaded','1');
+			$this->db->set('manually_uploaded','1');
+			$this->db->update($table);
+		}
+
+
+		function insert_bl_templates($id,$table)
     {
-      $sql = 'INSERT INTO bl_generation (job_id,content)
+      $sql = 'INSERT INTO '.$table.' (job_id,content)
       select '.$id.',content
-      from bl_generation
+      from '.$table.'
       where job_id = 0
       and NOT EXISTS(
-      select job_id,content  from bl_generation where job_id= '.$id.')
+      select job_id,content  from '.$table.' where job_id= '.$id.')
       LIMIT 1';
       $this->db->query($sql);
 
     }
+
+		//Dashboard counts
+
+  //count_jobs_in_water
+		function count_jobs_in_water(){
+
+ 		   $sql = 'SELECT COUNT(*) total FROM open_jobs where type = \'Ocean Export\' and sail_date <=CURRENT_DATE';
+ 			 $query = $this->db->query($sql);
+ 			 return $query->row()->total;
+ 	 }
+
+
+ //count_pending_mails
+	 function count_pending_mails(){
+
+			$sql = 'SELECT COUNT(*) total FROM email_queue WHERE sent = 0';
+			$query = $this->db->query($sql);
+			return $query->row()->total;
+	}
+
+
+	 //count_new_jobs
+	 function count_new_jobs(){
+
+	 	 $sql = 'SELECT COUNT(*) total FROM jobs WHERE create_date >= DATE_SUB( CURDATE( ) , INTERVAL 30 DAY )';
+	 	 $query = $this->db->query($sql);
+	 	 return $query->row()->total;
+	 }
+
+
+	 //count_pending_bl
+	 function count_pending_bl(){
+
+			$sql = 'SELECT COUNT(*) total FROM jobs j INNER JOIN job_types jt ON jt.id = j.job_type_id INNER JOIN bl_generation bl ON bl.job_id = j.id AND jt.type = \'Ocean Export\' AND bl.uploaded = 0';
+			$query = $this->db->query($sql);
+			return $query->row()->total;
+	}
+
+	function save_user_history($job_id,$user_id){
+
+		$sql = 'DELETE FROM recent_jobs WHERE user_id = '.$user_id.' AND job_id = '.$job_id.'';
+		$this->db->query($sql);
+
+		$sql = 'INSERT INTO recent_jobs (user_id,job_id) SELECT '.$user_id.','.$job_id.'';
+		$this->db->query($sql);
+
+		$sql = 'DELETE FROM recent_jobs WHERE user_id = '.$user_id.' AND id NOT IN (select id from (select id FROM recent_jobs WHERE user_id = '.$user_id.' ORDER BY create_date DESC LIMIT 5) x)';
+		$this->db->query($sql);
+
+	}
+
+	function recent_jobs($id)
+	{
+	 $this->db->select();
+ 	 $this->db->from('recent_jobs');
+	 $this->db->where('user_id',$id);
+ 	 $this->db->order_by('create_date', 'DESC');
+	 $this->db->limit(5);
+ 	 $query = $this->db->get();
+ 	 $query = $query->result_array();
+ 	 return $query;
+
+	}
 
 
 

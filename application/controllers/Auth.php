@@ -18,10 +18,29 @@ class Auth extends CI_Controller {
     public function log(){
 
         if($_POST){
-            $query = $this->login_model->validate_user();
 
-            //-- if valid
-            if($query){
+          //Customer check
+          $query = $this->login_model->validate_customer();
+          //-- if valid
+          if($query){
+              $data = array();
+              foreach($query as $row){
+                  $data = array(
+                      'id' => $row->id,
+                      'customer_id' => $row->customer_id,
+                      'name' => $row->first_name,
+                      'email' =>$row->email,
+                      'is_login' => TRUE,
+                      'type' => 'C'
+                  );
+                  $this->session->set_userdata($data);
+                  $url = base_url('customer/dashboard');
+              }
+              echo json_encode(array('st'=>1,'url'=> $url)); //--success
+          }
+
+          else if($this->login_model->validate_user()){
+              $query = $this->login_model->validate_user();
                 $data = array();
                 foreach($query as $row){
                     $data = array(
@@ -30,17 +49,21 @@ class Auth extends CI_Controller {
                         'email' =>$row->email,
                         'role' =>$row->role,
                         'is_login' => TRUE,
-                        'job_id' => 0
+                        'type' => 'E'
                     );
                     $this->session->set_userdata($data);
                     $url = base_url('admin/dashboard');
                 }
                 echo json_encode(array('st'=>1,'url'=> $url)); //--success
-            }else{
+            }
+
+            else{
                 echo json_encode(array('st'=>0)); //-- error
             }
 
-        }else{
+        }
+        else{
+
             $this->load->view('auth',$data);
         }
     }

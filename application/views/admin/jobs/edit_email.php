@@ -44,7 +44,7 @@
 <div class="row">
 
     <div class="col-sm-9 col-sm-offset-3 col-md-6 col-md-offset-2 main">
-        <h1 class="page-header">Edit Email Template</h1>
+        <h4 class="page-header">Edit Email Template</h4>
 
         <?= form_open_multipart(base_url('admin/jobs/edit_email/'.$id), array('class' => 'form-horizontal')) ?>
 
@@ -60,10 +60,10 @@
 
         <div class="form-group">
             <label class="control-label" for="activation_mail">To Mail</label>
-            <input type="text" name="email_to" class="form-control" value="<?= set_value('email_from', $email_to) ?>"
+            <input type="text" name="email_to" class="form-control" value="<?= set_value('email_to', $email_to) ?>"
                    placeholder="email_to">
 
-            <p class="text-red"><?= form_error('email_from'); ?></p>
+            <p class="text-red"><?= form_error('email_to'); ?></p>
         </div>
 
         <div class="form-group">

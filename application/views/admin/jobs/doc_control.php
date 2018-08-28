@@ -54,16 +54,16 @@
                       <a class="nav-link" href="<?php echo base_url('admin/jobs/edit/'.$jobs->job_id) ?>">Job Info</a>
                     </li>
                     <li class="nav-item">
-                      <a class="nav-link" href="<?php echo base_url('admin/jobs/shipinfo/'.$jobs->job_id) ?>">Shipment Info</a>
+                      <a class="nav-link" href="<?php echo base_url('admin/jobs/shipinfo/'.$jobs->job_id) ?>">Shipment</a>
                     </li>
                     <li class="nav-item">
                       <a class="nav-link active" href="<?php echo base_url('admin/jobs/doccontrol/'.$jobs->job_id) ?>">Doc Control</a>
                     </li>
                     <li class="nav-item">
-                      <a class="nav-link " href="<?php echo base_url('admin/jobs/job_docs/'.$jobs->job_id) ?>">Doc Upload</a>
+                      <a class="nav-link " href="<?php echo base_url('admin/jobs/job_docs/'.$jobs->job_id) ?>">Uploads</a>
                     </li>
                     <li class="nav-item">
-                      <a class="nav-link" href="<?php echo base_url('admin/jobs/job_status/'.$jobs->job_id) ?>">Status & Notifications</a>
+                      <a class="nav-link" href="<?php echo base_url('admin/jobs/job_status/'.$jobs->job_id) ?>">Status</a>
                     </li>
                   </ul>
                     <!-- Tab panes -->

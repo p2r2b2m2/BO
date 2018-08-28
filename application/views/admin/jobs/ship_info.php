@@ -54,16 +54,16 @@
                       <a class="nav-link" href="<?php echo base_url('admin/jobs/edit/'.$jobs->id) ?>">Job Info</a>
                     </li>
                     <li class="nav-item">
-                      <a class="nav-link active" href="<?php echo base_url('admin/jobs/shipinfo/'.$jobs->id) ?>">Shipment Info</a>
+                      <a class="nav-link active" href="<?php echo base_url('admin/jobs/shipinfo/'.$jobs->id) ?>">Shipment</a>
                     </li>
                     <li class="nav-item">
                       <a class="nav-link" href="<?php echo base_url('admin/jobs/doccontrol/'.$jobs->id) ?>">Doc Control</a>
                     </li>
                     <li class="nav-item">
-                      <a class="nav-link " href="<?php echo base_url('admin/jobs/job_docs/'.$jobs->id) ?>">Doc Upload</a>
+                      <a class="nav-link " href="<?php echo base_url('admin/jobs/job_docs/'.$jobs->id) ?>">Uploads</a>
                     </li>
                     <li class="nav-item">
-                      <a class="nav-link" href="<?php echo base_url('admin/jobs/job_status/'.$jobs->id) ?>">Status & Notifications</a>
+                      <a class="nav-link" href="<?php echo base_url('admin/jobs/job_status/'.$jobs->id) ?>">Status</a>
                     </li>
                   </ul>
                     <!-- Tab panes -->
@@ -163,7 +163,11 @@
                             <div class="row">
                               <div class="col-md-4 controls">
                                   <div class="form-group">
-                                      <label class="control-label">BL Number <a href="<?php echo base_url('admin/jobs/edit_bl/'.$jobs->id) ?>" data-toggle="tooltip" data-original-title="Create/Edit BL"> <i class="fa fa-folder-open text-info m-r-10"></i> </a></label>
+                                    <?php if ($jobs->uploaded == 0): ?>
+                                        <label class="control-label">BL Number <a href="<?php echo base_url('admin/jobs/edit_bl/'.$jobs->id) ?>" data-toggle="tooltip" data-original-title="Create/Edit BL"> &nbsp; <i class="fa fa-folder-open text-info m-r-10 fa-lg"></i> </a></label>
+                                    <?php else: ?>
+                                       <label class="control-label">BL Number <a href="#" data-toggle="tooltip" data-original-title="BL generated and available under upload tab"> &nbsp; <i class="fa fa-check-circle text-info m-r-10 fa-lg"></i> </a></label>
+                                    <?php endif ?>
                                       <div class="controls">
                                          <input type="text" name="bl_number" class="form-control" value="<?php echo $jobs->bl_number; ?>">
                                        </div>

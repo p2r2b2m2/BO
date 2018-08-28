@@ -17,8 +17,7 @@
     <!-- chartist CSS -->
     <link href="<?php echo base_url() ?>assets/plugins/chartist-js/dist/chartist.min.css" rel="stylesheet">
     <link href="<?php echo base_url() ?>assets/plugins/chartist-js/dist/chartist-init.css" rel="stylesheet">
-    <link href="<?php echo base_url() ?>assets/plugins/chartist-plugin-tooltip-master/dist/
-    chartist-plugin-tooltip.css" rel="stylesheet">
+
     <link href="<?php echo base_url() ?>assets/plugins/css-chart/css-chart.css" rel="stylesheet">
     <!--This page css - Morris CSS -->
     <link href="<?php echo base_url() ?>assets/plugins/morrisjs/morris.css" rel="stylesheet">
@@ -27,7 +26,6 @@
     <!-- toast CSS -->
     <link href="<?php echo base_url() ?>assets/plugins/toast-master/css/jquery.toast.css" rel="stylesheet">
     <!-- Vector CSS -->
-    <link href="<?php echo base_url() ?>/assets/plugins/vectormap/jquery-jvectormap-2.0.2.css" rel="stylesheet" />
 
 
 
@@ -101,17 +99,17 @@
                         <b>
                             <!--You can put here icon as well // <i class="wi wi-sunset"></i> //-->
                             <!-- Dark Logo icon -->
-                            <img src="<?php echo base_url() ?>assets/images/logo-icon.png" alt="homepage" class="dark-logo" />
+
                             <!-- Light Logo icon -->
                             <img src="<?php echo base_url() ?>assets/images/logo-light-icon.png" alt="homepage" class="light-logo" />
                         </b>
                         <!--End Logo icon -->
                         <!-- Logo text -->
-                        <span>
-                         <!-- dark Logo text -->
+                      <!--   <span>
+
                          <img src="<?php echo base_url() ?>assets/images/logo-light-text.png" alt="homepage" class="dark-logo" />
-                         <!-- Light Logo text -->
-                         <img src="<?php echo base_url() ?>assets/images/logo-light-text.png" class="light-logo" alt="homepage" /></span> </a>
+
+                         <img src="<?php echo base_url() ?>assets/images/logo-light-text.png" class="light-logo" alt="homepage" /></span> </a> -->
                 </div>
 
                 <!-- End Logo -->
@@ -204,7 +202,7 @@
 
                                 <?php if ($this->session->userdata('role') == 'admin'): ?>
                                     <li><a href="<?php echo base_url('admin/user') ?>"><i class="fa fa-angle-right"></i> Add User </a></li>
-                                    <li><a href="<?php echo base_url('admin/user/power') ?>"><i class="fa fa-angle-right"></i> Add User Power</a></li>
+                                    <!--<li><a href="<?php echo base_url('admin/user/power') ?>"><i class="fa fa-angle-right"></i> Add User Power</a></li> -->
                                 <?php else: ?>
                                     <?php if(check_power(1)):?>
                                         <li><a href="<?php echo base_url('admin/user') ?>"><i class="fa fa-angle-right"></i> Add User </a></li>
@@ -212,15 +210,6 @@
                                 <?php endif ?>
 
                                 <li><a href="<?php echo base_url('admin/user/all_user_list') ?>"><i class="fa fa-angle-right"></i> All Users</a></li>
-                            </ul>
-                        </li>
-
-
-                        <li>
-                            <a class="has-arrow waves-effect waves-dark" href="#" aria-expanded="false"><i class="mdi mdi-menu"></i><span class="hide-menu">Categories</span></a>
-                            <ul aria-expanded="false" class="collapse">
-                                <li><a href="<?php echo base_url('admin/category') ?>"><i class="fa fa-angle-right"></i> Category </a></li>
-                                <li><a href="<?php echo base_url('admin/sub_category') ?>"><i class="fa fa-angle-right"></i> Sub category</a></li>
                             </ul>
                         </li>
 
@@ -233,7 +222,7 @@
                         </li>
 
                         <li>
-                            <a class="has-arrow waves-effect waves-dark" href="#" aria-expanded="false"><i class="mdi mdi-menu"></i><span class="hide-menu">Maintanance</span></a>
+                            <a class="has-arrow waves-effect waves-dark" href="#" aria-expanded="false"><i class="fa fa-wrench"></i><span class="hide-menu">Maintanance</span></a>
                             <ul aria-expanded="false" class="collapse">
                                 <li><a href="<?php echo base_url('admin/doctypes') ?>"><i class="fa fa-angle-right"></i> Document Types </a></li>
                                 <li><a href="<?php echo base_url('admin/statustypes') ?>"><i class="fa fa-angle-right"></i> Status Types </a></li>
@@ -258,122 +247,22 @@
                                 <li><a href="<?php echo base_url('admin/missions/add') ?>"><i class="fa fa-angle-right"></i> Add new Mission</a></li>
                             </ul>
                         </li>
-
                         <li>
-                            <a class="has-arrow waves-effect waves-dark" href="#" aria-expanded="false"><i class="mdi mdi-bullseye"></i><span class="hide-menu">Items</span></a>
+                            <a class="has-arrow waves-effect waves-dark" href="#" aria-expanded="false"><i class="mdi mdi-menu"></i><span class="hide-menu">Recent Jobs</span></a>
                             <ul aria-expanded="false" class="collapse">
-                                <li><a href="<?php echo base_url('admin/items') ?>"><i class="fa fa-angle-right"></i> All Items </a></li>
-                                <li><a href="<?php echo base_url('admin/items/add') ?>"><i class="fa fa-angle-right"></i> Add new items</a></li>
+                              <?php $i = 1; foreach ($recentjobs as $job): ?>
+                                        <li><a href="<?php echo base_url('admin/jobs/edit/'.$job['job_id'])  ?>"><i class="fa fa-angle-right"></i> <?php echo $job['job_id']; ?></a></li>
+                              <?php $i++; endforeach ?>
+
                             </ul>
                         </li>
 
 
                         <li>
-                            <a class="waves-effect waves-dark" href="<?php echo base_url('admin/dashboard/backup') ?>" aria-expanded="false"><i class="fa fa-cloud-download"></i><span class="hide-menu">Backup Database</span></a>
-                        </li>
-
-                        <li>
-                            <a class="has-arrow waves-effect waves-dark" href="#" aria-expanded="false"><i class="mdi mdi-file"></i><span class="hide-menu">Forms</span></a>
-                            <ul aria-expanded="false" class="collapse">
-                                <li><a href="<?php echo base_url('admin/form/general') ?>"><i class="fa fa-angle-right"></i> Form Basic Layout </a></li>
-                                <li><a href="<?php echo base_url('admin/form/addons') ?>"><i class="fa fa-angle-right"></i> Form Addons</a></li>
-                                <li><a href="<?php echo base_url('admin/form/material') ?>"><i class="fa fa-angle-right"></i> Form Material</a></li>
-                                <li><a href="<?php echo base_url('admin/form/validation') ?>"><i class="fa fa-angle-right"></i> Form Validation</a></li>
-                            </ul>
-                        </li>
-                        <li>
-                            <a class="has-arrow waves-effect waves-dark" href="#" aria-expanded="false"><i class="mdi mdi-table"></i><span class="hide-menu">Tables</span></a>
-                            <ul aria-expanded="false" class="collapse">
-                                <li><a href="<?php echo base_url('admin/table/basic') ?>"><i class="fa fa-angle-right"></i> Basic Tables</a></li>
-                                <li><a href="<?php echo base_url('admin/table/layout') ?>"><i class="fa fa-angle-right"></i> Table Layouts</a></li>
-                                <li><a href="<?php echo base_url('admin/table/datatable') ?>"><i class="fa fa-angle-right"></i> Data Tables</a></li>
-                                <li><a href="<?php echo base_url('admin/table/editable') ?>"><i class="fa fa-angle-right"></i> Editable Table</a></li>
-                            </ul>
-                        </li>
-
-                        <li>
-                            <a class="has-arrow waves-effect waves-dark" href="#" aria-expanded="false"><i class="mdi mdi-chart-bubble"></i><span class="hide-menu">Ui Elements</span></a>
-                            <ul aria-expanded="false" class="collapse">
-                                <li><a href="<?php echo base_url('admin/ui/cards') ?>"><i class="fa fa-angle-right"></i> Cards</a></li>
-                                <li><a href="<?php echo base_url('admin/ui/buttons') ?>"><i class="fa fa-angle-right"></i> Buttons</a></li>
-                                <li><a href="<?php echo base_url('admin/ui/modals') ?>"><i class="fa fa-angle-right"></i> Modals</a></li>
-                                <li><a href="<?php echo base_url('admin/ui/tabs') ?>"><i class="fa fa-angle-right"></i> Tab</a></li>
-                                <li><a href="<?php echo base_url('admin/ui/tooltip') ?>"><i class="fa fa-angle-right"></i> Tooltip stylish</a></li>
-                                <li><a href="<?php echo base_url('admin/ui/sweet_alert') ?>"><i class="fa fa-angle-right"></i> Sweet Alert</a></li>
-                                <li><a href="<?php echo base_url('admin/ui/notification') ?>"><i class="fa fa-angle-right"></i> Notification</a></li>
-                                <li><a href="<?php echo base_url('admin/ui/timeline') ?>"><i class="fa fa-angle-right"></i> Timeline</a></li>
-                                <li><a href="<?php echo base_url('admin/ui/typography') ?>"><i class="fa fa-angle-right"></i> Typography</a></li>
-                                <li><a href="<?php echo base_url('admin/ui/bootstrap_ui') ?>"><i class="fa fa-angle-right"></i> Bootstrap Ui</a></li>
-                            </ul>
-                        </li>
-
-                        <li>
-                            <a class="has-arrow waves-effect waves-dark" href="#" aria-expanded="false"><i class="mdi mdi-book-open-variant"></i><span class="hide-menu">Sample Pages</span></a>
-                            <ul aria-expanded="false" class="collapse">
-                                <li><a href="<?php echo base_url('admin/pages/blank') ?>"><i class="fa fa-angle-right"></i> Blank page</a></li>
-                                <li><a href="<?php echo base_url('admin/pages/login') ?>"><i class="fa fa-angle-right"></i> Login</a></li>
-                                <li><a href="<?php echo base_url('admin/pages/register') ?>"><i class="fa fa-angle-right"></i> Register</a></li>
-                                <li><a href="<?php echo base_url('admin/pages/lockscreen') ?>"><i class="fa fa-angle-right"></i> Lockscreen</a></li>
-                                <li><a href="<?php echo base_url('admin/pages/recover') ?>"><i class="fa fa-angle-right"></i> Recover password</a></li>
-                                <li><a href="<?php echo base_url('admin/pages/profile') ?>"><i class="fa fa-angle-right"></i> Profile page</a></li>
-                                <li><a href="<?php echo base_url('admin/pages/invoice') ?>"><i class="fa fa-angle-right"></i> Invoice</a></li>
-                                <li><a href="<?php echo base_url('admin/pages/error') ?>"><i class="fa fa-angle-right"></i> Error Pages</a></li>
-                            </ul>
+                            <a class="waves-effect waves-dark" href="<?php echo base_url('admin/dashboard/backup_uploads') ?>" aria-expanded="false"><i class="fa fa-cloud-download"></i><span class="hide-menu">Backup Docs</span></a>
                         </li>
 
 
-                        <li>
-                            <a class="waves-effect waves-dark" href="<?php echo base_url('admin/ui/mail') ?>" aria-expanded="false"><i class="mdi mdi-email"></i><span class="hide-menu">Inbox</span></a>
-                        </li>
-
-                        <li>
-                            <a class="has-arrow waves-effect waves-dark" href="#" aria-expanded="false"><i class="mdi mdi-map-marker"></i><span class="hide-menu">Maps</span></a>
-                            <ul aria-expanded="false" class="collapse">
-                                <li><a href="<?php echo base_url('admin/ui/google_map') ?>"><i class="fa fa-angle-right"></i> Google Maps</a></li>
-                                <li><a href="<?php echo base_url('admin/ui/vector_map') ?>"><i class="fa fa-angle-right"></i> Vector Maps</a></li>
-                            </ul>
-                        </li>
-                        <li>
-                            <a class="waves-effect waves-dark" href="<?php echo base_url('admin/ui/widget') ?>" aria-expanded="false"><i class="mdi mdi-widgets"></i><span class="hide-menu">Widgets</span></a>
-                        </li>
-                        <li>
-                            <a class="has-arrow waves-effect waves-dark" href="#" aria-expanded="false"><i class="mdi mdi-file-chart"></i><span class="hide-menu">Charts</span></a>
-                            <ul aria-expanded="false" class="collapse">
-                                <li><a href="<?php echo base_url('admin/ui/morris_chart') ?>"><i class="fa fa-angle-right"></i> Morris Chart</a></li>
-                                <li><a href="<?php echo base_url('admin/ui/js_chart') ?>"><i class="fa fa-angle-right"></i> Chartjs</a></li>
-                            </ul>
-                        </li>
-
-                        <li>
-                            <a class="has-arrow waves-effect waves-dark" href="#" aria-expanded="false"><i class="mdi mdi-bullseye"></i><span class="hide-menu">Apps</span></a>
-                            <ul aria-expanded="false" class="collapse">
-
-                                <li><a href="<?php echo base_url('admin/ui/calender') ?>"><i class="fa fa-angle-right"></i> Calendar</a></li>
-                                <li><a href="<?php echo base_url('admin/ui/contact') ?>"><i class="fa fa-angle-right"></i> Contact / Employee</a></li>
-                            </ul>
-                        </li>
-
-                        <!-- <li class="nav-devider"></li>
-                        <li class="nav-small-cap">EXTRA COMPONENTS</li> -->
-
-
-                        <li>
-                            <a class="has-arrow waves-effect waves-dark" href="#" aria-expanded="false"><i class="mdi mdi-arrange-send-backward"></i><span class="hide-menu">Multi level dd</span></a>
-                            <ul aria-expanded="false" class="collapse">
-                                <li><a href="#">item 1.1</a></li>
-                                <li><a href="#">item 1.2</a></li>
-                                <li>
-                                    <a class="has-arrow" href="#" aria-expanded="false">Menu 1.3</a>
-                                    <ul aria-expanded="false" class="collapse">
-                                        <li><a href="#">item 1.3.1</a></li>
-                                        <li><a href="#">item 1.3.2</a></li>
-                                        <li><a href="#">item 1.3.3</a></li>
-                                        <li><a href="#">item 1.3.4</a></li>
-                                    </ul>
-                                </li>
-                                <li><a href="#">item 1.4</a></li>
-                            </ul>
-                        </li>
                     </ul>
                 </nav>
                 <!-- End Sidebar navigation -->
@@ -474,8 +363,7 @@
     <script src="<?php echo base_url() ?>assets/plugins/echarts/echarts-all.js"></script>
 
     <!-- Vector map JavaScript -->
-    <script src="<?php echo base_url() ?>assets/plugins/vectormap/jquery-jvectormap-2.0.2.min.js"></script>
-    <script src="<?php echo base_url() ?>assets/plugins/vectormap/jquery-jvectormap-world-mill-en.js"></script>
+
     <!-- Calendar JavaScript -->
     <script src="<?php echo base_url() ?>assets/plugins/moment/moment.js"></script>
     <script src='<?php echo base_url() ?>assets/plugins/calendar/dist/fullcalendar.min.js'></script>
@@ -494,19 +382,8 @@
     <script src="<?php echo base_url() ?>assets/plugins/toast-master/js/jquery.toast.js"></script>
     <script src="<?php echo base_url() ?>assets/js/toastr.js"></script>
 
-    <!-- google maps api -->
-    <script src="https://maps.google.com/maps/api/js?key=AIzaSyCUBL-6KdclGJ2a_UpmB2LXvq7VOcPT7K4&amp;sensor=true"></script>
-    <script src="<?php echo base_url() ?>assets/plugins/gmaps/gmaps.min.js"></script>
-    <script src="<?php echo base_url() ?>assets/plugins/gmaps/jquery.gmaps.js"></script>
 
-    <!-- Vector map JavaScript -->
-    <script src="<?php echo base_url() ?>assets/plugins/vectormap/jquery-jvectormap-2.0.2.min.js"></script>
-    <script src="<?php echo base_url() ?>assets/plugins/vectormap/jquery-jvectormap-world-mill-en.js"></script>
-    <script src="<?php echo base_url() ?>assets/plugins/vectormap/jquery-jvectormap-in-mill.js"></script>
-    <script src="<?php echo base_url() ?>assets/plugins/vectormap/jquery-jvectormap-us-aea-en.js"></script>
-    <script src="<?php echo base_url() ?>assets/plugins/vectormap/jquery-jvectormap-uk-mill-en.js"></script>
-    <script src="<?php echo base_url() ?>assets/plugins/vectormap/jquery-jvectormap-au-mill.js"></script>
-    <script src="<?php echo base_url() ?>assets/plugins/vectormap/jvectormap.custom.js"></script>
+
 
     <!--Morris JavaScript -->
     <script src="<?php echo base_url() ?>assets/plugins/raphael/raphael-min.js"></script>
@@ -633,7 +510,6 @@
     <script src="<?php echo base_url() ?>assets/plugins/bootstrap-select/bootstrap-select.min.js" type="text/javascript"></script>
     <script src="<?php echo base_url() ?>assets/plugins/bootstrap-tagsinput/dist/bootstrap-tagsinput.min.js"></script>
     <script src="<?php echo base_url() ?>assets/plugins/bootstrap-touchspin/dist/jquery.bootstrap-touchspin.min.js" type="text/javascript"></script>
-    <script type="text/javascript" src="../assets/plugins/multiselect/js/jquery.multi-select.js"></script>
 
     <script>
     jQuery(document).ready(function() {

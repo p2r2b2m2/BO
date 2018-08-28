@@ -119,7 +119,7 @@
                               </div>
                               <!--/row-->
                               <div class="row">
-                                  <div class="col-md-6">
+                                  <div class="col-md-4">
                                       <div class="form-group">
                                           <label class="control-label">Invoice Number</label>
                                           <div class="controls">
@@ -129,7 +129,12 @@
                                   </div>
                                   <!--/span-->
 
-                                  <div class="col-md-2">
+                                  <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="control-label">HBL Number</label>
+                                        <input type="text" name="hbl_number" class="form-control" placeholder="" readonly>
+                                        <small class="form-control-feedback"> Will be generated when the job is created.</small>
+                                      </div>
 
                                   </div>
 

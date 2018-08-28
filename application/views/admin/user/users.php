@@ -67,7 +67,7 @@
                 <?php if ($this->session->userdata('role') == 'admin'): ?>
                     <a href="<?php echo base_url('admin/user') ?>" class="btn btn-info pull-right"><i class="fa fa-plus"></i> Add New User</a> &nbsp;
 
-                    <a href="<?php echo base_url('admin/user/power') ?>" class="btn btn-info"><i class="fa fa-user-o"></i> &nbsp; Add User Power</a>
+                    <!--<a href="<?php echo base_url('admin/user/power') ?>" class="btn btn-info"><i class="fa fa-user-o"></i> &nbsp; Add User Power</a> -->
                 <?php else: ?>
                     <!-- check logged user role permissions -->
 

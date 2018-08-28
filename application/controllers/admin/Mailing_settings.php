@@ -10,6 +10,7 @@ class Mailing_settings extends CI_Controller {
     {
         parent::__construct();
         check_login_user();
+        check_employee();
         $this->load->library('form_validation');
         $this->load->model('settings_model');
         $this->load->model('common_model');
@@ -25,6 +26,7 @@ class Mailing_settings extends CI_Controller {
       $data['page_title'] = 'Email Templates';
       $data['templates'] = $this->common_model->get_all_templates();
       $data['main_content'] = $this->load->view('admin/templates/all_templates', $data, TRUE);
+      $data['recentjobs'] = $this->common_model->recent_jobs($this->session->userdata('id'));
       $this->load->view('admin/index', $data);
     }
 
@@ -43,6 +45,7 @@ class Mailing_settings extends CI_Controller {
             $data['activation_subject'] = $this->settings_model->get_option('template_subject',$id);
             $data['activation_content'] = $this->settings_model->get_option('template_content',$id);
             $data['main_content'] = $this->load->view('admin/templates/settings_edit', $data, TRUE);
+            $data['recentjobs'] = $this->common_model->recent_jobs($this->session->userdata('id'));
             $this->load->view('admin/index', $data);
         }else{
             $this->settings_model->update($id);

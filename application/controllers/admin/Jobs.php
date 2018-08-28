@@ -5,6 +5,7 @@ class Jobs extends CI_Controller {
 	public function __construct(){
         parent::__construct();
         check_login_user();
+				check_employee();
         $this->load->model('common_model');
         $this->load->model('login_model');
 				$this->load->model('settings_model');
@@ -21,11 +22,54 @@ class Jobs extends CI_Controller {
     public function index()
     {
         $data = array();
-        $data['page_title'] = 'Jobs';
+        $data['page_title'] = 'All Jobs';
         $data['jobs'] = $this->common_model->get_all_jobs();
         $data['main_content'] = $this->load->view('admin/jobs/all_jobs', $data, TRUE);
+				$data['recentjobs'] = $this->common_model->recent_jobs($this->session->userdata('id'));
         $this->load->view('admin/index', $data);
     }
+
+		public function jobs_in_water()
+    {
+        $data = array();
+        $data['page_title'] = 'Jobs In Water';
+        $data['jobs'] = $this->common_model->get_jobs_in_water();
+        $data['main_content'] = $this->load->view('admin/jobs/all_jobs', $data, TRUE);
+				$data['recentjobs'] = $this->common_model->recent_jobs($this->session->userdata('id'));
+        $this->load->view('admin/index', $data);
+    }
+
+		public function new_jobs()
+    {
+        $data = array();
+        $data['page_title'] = 'New Jobs';
+        $data['jobs'] = $this->common_model->get_new_jobs();
+        $data['main_content'] = $this->load->view('admin/jobs/all_jobs', $data, TRUE);
+				$data['recentjobs'] = $this->common_model->recent_jobs($this->session->userdata('id'));
+        $this->load->view('admin/index', $data);
+    }
+
+		//jobs_bl_pending
+		public function jobs_bl_pending()
+ 	 {
+ 			 $data = array();
+ 			 $data['page_title'] = 'BL Pending Jobs';
+ 			 $data['jobs'] = $this->common_model->get_bl_pending_jobs();
+ 			 $data['main_content'] = $this->load->view('admin/jobs/all_jobs', $data, TRUE);
+ 			 $data['recentjobs'] = $this->common_model->recent_jobs($this->session->userdata('id'));
+ 			 $this->load->view('admin/index', $data);
+ 	 }
+
+	 public function pending_emails()
+		{
+				$data = array();
+				$data['page_title'] = 'Pending Emails';
+				$data['emails'] = $this->common_model->get_equeue_all();
+				$data['main_content'] = $this->load->view('admin/jobs/pending_emails', $data, TRUE);
+				$data['recentjobs'] = $this->common_model->recent_jobs($this->session->userdata('id'));
+				$this->load->view('admin/index', $data);
+		}
+
 
 		public function add()
 		{
@@ -51,7 +95,8 @@ class Jobs extends CI_Controller {
 						$id = $this->common_model->insert($data, 'jobs');
 
 						$data1 = array(
-							 'asl_reference_no' 			=> 'ASL'.$id
+							 'asl_reference_no' 			=> $id,
+							 'hbl_number'							=> $id
 						 );
 						 $data1=array_map('trim',$data1);
 						 $data1 = $this->security->xss_clean($data1);
@@ -88,7 +133,8 @@ class Jobs extends CI_Controller {
 					$id3 = $this->common_model->insert($data3, 'doc_control');
 
 					//add a placeholder BL template_mail
-					$this->common_model->insert_bl_template($id);
+					$this->common_model->insert_bl_templates($id,'bl_generation');
+					$this->common_model->insert_bl_templates($id,'hbl_generation');
 
 
 				//-- Create a document upload folder for this job
@@ -107,6 +153,7 @@ class Jobs extends CI_Controller {
 				$data['customers'] = $this->common_model->select_customers();
 				$data['jobtypes'] = $this->common_model->select_job_types();
 				$data['main_content'] = $this->load->view('admin/jobs/add_job', $data, TRUE);
+				$data['recentjobs'] = $this->common_model->recent_jobs($this->session->userdata('id'));
 				$this->load->view('admin/index', $data);
 		}
 
@@ -122,6 +169,7 @@ class Jobs extends CI_Controller {
 							'job_type_id' 			=> $_POST['job_type_id'],
 							'job_class' 				=> $_POST['job_class'],
 							'invoice_number' 		=> $_POST['invoice_number'],
+							'hbl_number' 				=> $_POST['hbl_number'],
 							'load_port'			 		=> $_POST['load_port'],
 							'discharge_port' 		=> $_POST['discharge_port'],
 							'final_destination' => $_POST['final_destination']
@@ -158,11 +206,13 @@ class Jobs extends CI_Controller {
 
 				}
 
-				$data['jobs'] = $this->common_model->get_mission_by_id($id, 'jobs');
+				$this->common_model->save_user_history($id,$this->session->userdata('id'));
+				$data['jobs'] = $this->common_model->get_job_info($id);
 				$data['customers'] = $this->common_model->select_customers();
 				$data['jobtypes'] = $this->common_model->select_job_types();
 				$data['jobs_addr'] = $this->common_model->get_item_by_job_id($id,'job_addr');
 				$data['main_content'] = $this->load->view('admin/jobs/edit_job', $data, TRUE);
+				$data['recentjobs'] = $this->common_model->recent_jobs($this->session->userdata('id'));
 				$this->load->view('admin/index', $data);
 
 		}
@@ -214,10 +264,11 @@ class Jobs extends CI_Controller {
 
 				}
 
-				$data['jobs'] = $this->common_model->get_mission_by_id($id, 'jobs');
+				$data['jobs'] = $this->common_model->get_ship_info($id);
 				$data['equipments'] = $this->common_model->select_equipment_types();
 				$data['jobs_addr'] = $this->common_model->get_item_by_job_id($id,'job_addr');
 				$data['main_content'] = $this->load->view('admin/jobs/ship_info', $data, TRUE);
+				$data['recentjobs'] = $this->common_model->recent_jobs($this->session->userdata('id'));
 				$this->load->view('admin/index', $data);
 
 		}
@@ -227,34 +278,49 @@ class Jobs extends CI_Controller {
 		{
 				if ($_POST) {
 
+					if(isset($_POST['aes']) && ($_POST['aes'] == 'N')){ $aes = 'N';} else { $aes = '';}
+					if(isset($_POST['ins']) && ($_POST['ins'] == 'N')){ $ins = 'N';} else { $ins = '';}
+					if(isset($_POST['pl']) && ($_POST['pl'] == 'N')){ $pl = 'N';} else { $pl = '';}
+					if(isset($_POST['dr']) && ($_POST['dr'] == 'N')){ $pl = 'N';} else { $dr = '';}
+					if(isset($_POST['mlb_sent']) && ($_POST['mlb_sent'] == 'N')){ $mlb_sent = 'N';} else { $mlb_sent = '';}
+					if(isset($_POST['mlb_approved']) && ($_POST['mlb_approved'] == 'N')){ $mlb_approved = 'N';} else { $mlb_approved = '';}
+					if(isset($_POST['line_paid']) && ($_POST['line_paid'] == 'N')){ $line_paid = 'N';} else { $line_paid = '';}
+					if(isset($_POST['mlb_received']) && ($_POST['mlb_received'] == 'N')){ $mlb_received = 'N';} else { $mlb_received = '';}
+					if(isset($_POST['ds_to_customer']) && ($_POST['ds_to_customer'] == 'N')){ $ds_to_customer = 'N';} else { $ds_to_customer = '';}
+					if(isset($_POST['ds_to_agent']) && ($_POST['ds_to_agent'] == 'N')){ $ds_to_agent = 'N';} else { $ds_to_agent = '';}
+					if(isset($_POST['agent_paid']) && ($_POST['agent_paid'] == 'N')){ $agent_paid = 'N';} else { $agent_paid = '';}
+					if(isset($_POST['signed_do']) && ($_POST['signed_do'] == 'N')){ $signed_do = 'N';} else { $signed_do = '';}
+
+
+
 						$data = array(
-							'aes' 			=> $_POST['aes'],
+							'aes' 			=> $aes,
 							'aes_date' 			=> $_POST['aes_date'],
-							'ins' 			=> $_POST['ins'],
+							'ins' 			=> $ins,
 							'ins_date' 			=> $_POST['ins_date'],
-							'pl' 			=> $_POST['pl'],
+							'pl' 			=> $pl,
 							'pl_date' 			=> $_POST['pl_date'],
-							'dr' 			=> $_POST['dr'],
+							'dr' 			=> $dr,
 							'dr_date' 			=> $_POST['dr_date'],
-							'mlb_sent' 			=> $_POST['mlb_sent'],
+							'mlb_sent' 			=> $mlb_sent,
 							'mlb_sent_date' 			=> $_POST['mlb_sent_date'],
-							'mlb_approved' 			=> $_POST['mlb_approved'],
+							'mlb_approved' 			=> $mlb_approved,
 							'mlb_approved_date' 			=> $_POST['mlb_approved_date'],
 							'invoiced_date' 			=> $_POST['invoiced_date'],
 							'payment_date' 			=> $_POST['payment_date'],
 							'payment_comment' 			=> $_POST['payment_comment'],
-							'line_paid' 			=> $_POST['line_paid'],
+							'line_paid' 			=> $line_paid,
 							'line_paid_date' 			=> $_POST['line_paid_date'],
-							'mlb_received' 			=> $_POST['mlb_received'],
+							'mlb_received' 			=> $mlb_received,
 							'mlb_received_date' 			=> $_POST['mlb_received_date'],
 							'mlb_received_comment' 			=> $_POST['mlb_received_comment'],
-							'ds_to_customer' 			=> $_POST['ds_to_customer'],
+							'ds_to_customer' 			=> $ds_to_customer,
 							'ds_to_customer_date' 			=> $_POST['ds_to_customer_date'],
-							'ds_to_agent' 			=> $_POST['ds_to_agent'],
+							'ds_to_agent' 			=> $ds_to_agent,
 							'ds_to_agent_date' 			=> $_POST['ds_to_agent_date'],
-							'agent_paid' 			=> $_POST['agent_paid'],
+							'agent_paid' 			=> $agent_paid,
 							'agent_paid_date' 			=> $_POST['agent_paid_date'],
-							'signed_do' 			=> $_POST['signed_do'],
+							'signed_do' 			=> $signed_do,
 							'signed_do_date' 			=> $_POST['signed_do_date'],
 							'file_closed' 			=> $_POST['file_closed']
 						/*	'seal_number' 				=> $_POST['seal_number'],
@@ -270,7 +336,7 @@ class Jobs extends CI_Controller {
 						);
 
 						$data = $this->security->xss_clean($data);
-						$data=array_map('trim',$data);
+					//	$data=array_map('trim',$data);
 						$this->common_model->update_with_job_id($data, $id, 'doc_control');
 
 
@@ -282,6 +348,7 @@ class Jobs extends CI_Controller {
 
 				$data['jobs'] = $this->common_model->get_item_by_job_id($id, 'doc_control');
 				$data['main_content'] = $this->load->view('admin/jobs/doc_control', $data, TRUE);
+				$data['recentjobs'] = $this->common_model->recent_jobs($this->session->userdata('id'));
 				$this->load->view('admin/index', $data);
 
 		}
@@ -365,6 +432,7 @@ class Jobs extends CI_Controller {
 				$data['status_hist'] = $this->common_model->get_status_history($id);
 				$data['equeue'] = $this->common_model->get_equeue_for_job($id);
 				$data['main_content'] = $this->load->view('admin/jobs/job_status', $data, TRUE);
+				$data['recentjobs'] = $this->common_model->recent_jobs($this->session->userdata('id'));
 				$this->load->view('admin/index', $data);
 
 		}
@@ -376,7 +444,7 @@ class Jobs extends CI_Controller {
 
 			$this->form_validation->set_error_delimiters("<span class='incorrect'>", "</span>");
 			$this->form_validation->set_rules('email_from', 'email_from', 'trim|valid_email');
-			$this->form_validation->set_rules('email_to', 'email_to', 'trim|valid_email');
+			//$this->form_validation->set_rules('email_to', 'email_to', 'trim|valid_email');
 			$this->form_validation->set_rules('subject', 'subject', 'trim');
 			$this->form_validation->set_rules('content', 'content', 'trim');
 
@@ -390,6 +458,7 @@ class Jobs extends CI_Controller {
 					$data['subject'] = $this->common_model->get_option('subject',$id);
 					$data['content'] = $this->common_model->get_option('content',$id);
 					$data['main_content'] = $this->load->view('admin/jobs/edit_email', $data, TRUE);
+					$data['recentjobs'] = $this->common_model->recent_jobs($this->session->userdata('id'));
 					$this->load->view('admin/index', $data);
 			}else{
 					$this->common_model->update_email($id);
@@ -444,26 +513,50 @@ class Jobs extends CI_Controller {
 		//	$jobid = $this->common_model->get_job_id_by_children_id($id,'email_queue');
 
 			if ($_POST) {
-				$this->common_model->update_bl($id);
+				$this->common_model->update_bl($id,'bl_generation');
 				$this->session->set_flashdata('msg', 'BL Doc changes saved');
 				redirect(base_url('admin/jobs/edit_bl/'.$id));
 		  	}
 
 					$data['id'] = $id;
-					$data['generated_ind'] = $this->common_model->get_bl_content('generated_ind',$id);
-					$data['content'] = $this->common_model->get_bl_content('content',$id);
+					$data['generated_ind'] = $this->common_model->get_bl_content('generated_ind',$id,'bl_generation');
+					$data['content'] = $this->common_model->get_bl_content('content',$id,'bl_generation');
 					$data['main_content'] = $this->load->view('admin/jobs/edit_bl', $data, TRUE);
+					$data['recentjobs'] = $this->common_model->recent_jobs($this->session->userdata('id'));
 					$this->load->view('admin/index', $data);
 		}
 
 		public function edit_bl_data_from_db($id)
 		{
 
-		$content = $this->common_model->get_bl_content('content',$id);
+		$content = $this->common_model->get_bl_content('content',$id,'bl_generation');
+
+		$dbdata = $this->common_model->get_info_bl_template($id);
 
 		//Replace the key words with dynamic data
 		$data_map = array(
-				'[[COMPANY_NAME]]' => 'AIR SEA LAND SHIPPING AND MOVING INC.'
+				'[[C_NAME]]' 						=> $dbdata->C_NAME,
+				'[[ASL_REF]]' 					=> $dbdata->ASL_REF,
+				'[[CBN]]'								=> $dbdata->CBN,
+				'[[AGENT_NAME]]' 				=> $dbdata->AGENT_NAME,
+				'[[AG_ADDR_1]]' 				=> $dbdata->AG_ADDR_1,
+				'[[AG_ADDR_2]]' 				=> $dbdata->AG_ADDR_2,
+				'[[AG_CITY]]' 					=> $dbdata->AG_CITY,
+				'[[AG_STATE_PROVINCE]]' => $dbdata->AG_STATE_PROVINCE,
+				'[[AG_COUNTRY]]' 				=> $dbdata->AG_COUNTRY,
+				'[[AG_PHONE]]' 					=> $dbdata->AG_PHONE,
+				'[[LOAD_PORT]]' 				=> $dbdata->LOAD_PORT,
+				'[[PICK_UP_COUNTRY]]' 	=> $dbdata->PICK_UP_COUNTRY,
+				'[[VESSEL_VOYAGE]]' 		=> $dbdata->VESSEL_VOYAGE,
+				'[[DISCHARGE_PORT]]' 		=> $dbdata->DISCHARGE_PORT,
+				'[[FINAL_DESTINATION]]' => $dbdata->FINAL_DESTINATION,
+				'[[CONTAINER_NUMBER]]' 	=> $dbdata->CONTAINER_NUMBER,
+				'[[SEAL_NUMBER]]' 			=> $dbdata->SEAL_NUMBER,
+				'[[EQUIPMENT_TYPE]]' 		=> $dbdata->EQUIPMENT_TYPE,
+				'[[AES_NUMBER]]' 				=> $dbdata->AES_NUMBER,
+				'[[WEIGHT]]' 						=> $dbdata->WEIGHT,
+				'[[MEASUREMENT]]' 			=> $dbdata->MEASUREMENT,
+				'[[DATE_TODAY]]'				=> str_replace('-',' ',date('F-j-Y'))//current_date(time()->format('F j Y'))
 		);
 
 		$content = str_replace(array_keys($data_map), array_values($data_map), $content);
@@ -484,7 +577,7 @@ class Jobs extends CI_Controller {
 
 		$master_bl_id = 0;
 
-		$content = $this->common_model->get_bl_content('content',$master_bl_id);
+		$content = $this->common_model->get_bl_content('content',$master_bl_id,'bl_generation');
 
 		$data = array(
 				'content' => $content,
@@ -499,57 +592,49 @@ class Jobs extends CI_Controller {
 
 		public function create_bl($id)
 		{
-			//if((isset($_POST['content'])) && (!empty(trim($_POST['content'])))) //if content of CKEditor ISN'T empty
-		//	{
-				$posted_editor = $this->common_model->get_bl_content('content',$id);//$_POST['content']; //get content of CKEditor
-				$path = './uploads/job_docs/'.$id.'/BL.pdf'; //specify the file save location and the file name
+
+				$posted_editor = $this->common_model->get_bl_content('content',$id,'bl_generation');
+				$file_name = 'MBL_'.$id.'.pdf';
+				$path = './uploads/job_docs/'.$id.'/'.$file_name; //specify the file save location and the file name
 
 
 				$pdf = new \Mpdf\Mpdf(['format' => 'A3']);
-			//	define('_MPDF_TTFONTDATAPATH', sys_get_temp_dir()."/");
 				$pdf->WriteHTML($posted_editor);
 				$pdf->Output($path,'F');
-				$url = 'uploads/job_docs/'.$id.'/BL.pdf';
+				$url = 'uploads/job_docs/'.$id.'/'.$file_name;
 				$data = array(
 						'job_id' => $id,
-						'doc_type_id' => $this->common_model->get_doc_id_bl(),
+						'doc_type_id' => $this->common_model->get_doc_id_bl('MBL'),
 						'url' => $url,
-						'file_name' => 'BL.pdf',
-						'uploaded_by' => $this->session->userdata('email'),
+						'file_name' => $file_name,
+						'uploaded_by' => 'SYSTEM/'.$this->session->userdata('email'),
 						'uploaded_date' => current_datetime()
 				);
 
 				$data = $this->security->xss_clean($data);
 				$this->common_model->insert($data,'job_docs');
-				$this->session->set_flashdata('msg', 'BL created and uploaded');
+
+				$data = array(
+						'uploaded' => '1',
+						'manually_uploaded' => '0'
+				);
+
+				$this->common_model->update_with_job_id($data,$id,'bl_generation');
+
+				$this->session->set_flashdata('msg', 'MBL created and uploaded');
 				redirect(base_url('admin/jobs/job_docs/'.$id));
 		//	}
 
 	}
 
-	function exportPDF($text,$path)
-	{
-		try
-		{
-			$pdf = new \Mpdf\Mpdf(['format' => 'A3']);
-			$pdf->WriteHTML($text);
-			$pdf->Output($path,'F'); //$pdf->Output('../files/example.pdf','F');
-
-			return true;
-		}
-		catch(Exception $e)
-		{
-			return false;
-		}
-	}
 		//create_bl
-		public function create_bl_1($id)
+		public function preview_bl($id)
 		{
 
 			$mpdf = new \Mpdf\Mpdf(['format' => 'A3']);
 			$mpdf->use_kwt = true;
 
-			$html = $this->common_model->get_bl_content('content',$id);
+			$html = $this->common_model->get_bl_content('content',$id,'bl_generation');
 			$mpdf->use_kwt = true;
 			$mpdf->WriteHTML($html);
 			$mpdf->Output(); // opens in browser
@@ -560,6 +645,131 @@ class Jobs extends CI_Controller {
 		 // $this->session->set_flashdata('msg', 'BL created and uploaded');
 		//	redirect(base_url('admin/jobs/job_docs/'.$id));
 		}
+
+		public function edit_hbl($id)
+		{
+
+		//	$jobid = $this->common_model->get_job_id_by_children_id($id,'email_queue');
+
+			if ($_POST) {
+				$this->common_model->update_bl($id,'hbl_generation');
+				$this->session->set_flashdata('msg', 'HBL Doc changes saved');
+				redirect(base_url('admin/jobs/edit_hbl/'.$id));
+		  	}
+
+					$data['id'] = $id;
+					$data['generated_ind'] = $this->common_model->get_bl_content('generated_ind',$id,'hbl_generation');
+					$data['content'] = $this->common_model->get_bl_content('content',$id,'hbl_generation');
+					$data['main_content'] = $this->load->view('admin/jobs/edit_hbl', $data, TRUE);
+					$data['recentjobs'] = $this->common_model->recent_jobs($this->session->userdata('id'));
+					$this->load->view('admin/index', $data);
+		}
+
+		public function edit_hbl_data_from_db($id)
+		{
+
+		$content = $this->common_model->get_bl_content('content',$id,'hbl_generation');
+
+		$dbdata = $this->common_model->get_info_hbl_template($id);
+
+		//Replace the key words with dynamic data
+		$data_map = array(
+				'[[C_NAME]]' 						=> $dbdata->C_NAME,
+				'[[HBL_NUMBER]]' 					=> $dbdata->HBL_NUMBER,
+				'[[CBN]]'								=> $dbdata->CBN,
+				'[[PICK_UP_ADDR_1]]' 				=> $dbdata->PICK_UP_ADDR_1,
+				'[[PICK_UP_ADDR_2]]' 				=> $dbdata->PICK_UP_ADDR_2,
+				'[[PICK_UP_CITY]]' 					=> $dbdata->PICK_UP_CITY,
+				'[[PICK_UP_STATE]]' => $dbdata->PICK_UP_STATE,
+				'[[PICK_UP_ZIP]]' => $dbdata->PICK_UP_ZIP,
+				'[[PICK_UP_COUNTRY]]' 				=> $dbdata->PICK_UP_COUNTRY,
+				'[[C_PHONE]]' 					=> $dbdata->C_PHONE,
+				'[[DEST_ADDR_1]]' 				=> $dbdata->DEST_ADDR_1,
+				'[[DEST_ADDR_2]]' 				=> $dbdata->DEST_ADDR_2,
+				'[[DEST_CITY]]' 					=> $dbdata->DEST_CITY,
+				'[[DEST_STATE_PROVINCE]]' => $dbdata->DEST_STATE_PROVINCE,
+				'[[DEST_COUNTRY]]' 				=> $dbdata->DEST_COUNTRY,
+				'[[LOAD_PORT]]' 				=> $dbdata->LOAD_PORT,
+				'[[PICK_UP_COUNTRY]]' 	=> $dbdata->PICK_UP_COUNTRY,
+				'[[VESSEL_VOYAGE]]' 		=> $dbdata->VESSEL_VOYAGE,
+				'[[DISCHARGE_PORT]]' 		=> $dbdata->DISCHARGE_PORT,
+				'[[FINAL_DESTINATION]]' => $dbdata->FINAL_DESTINATION,
+				'[[CONTAINER_NUMBER]]' 	=> $dbdata->CONTAINER_NUMBER,
+				'[[SEAL_NUMBER]]' 			=> $dbdata->SEAL_NUMBER,
+				'[[EQUIPMENT_TYPE]]' 		=> $dbdata->EQUIPMENT_TYPE,
+				'[[AES_NUMBER]]' 				=> $dbdata->AES_NUMBER,
+				'[[WEIGHT]]' 						=> $dbdata->WEIGHT,
+				'[[MEASUREMENT]]' 			=> $dbdata->MEASUREMENT,
+				'[[DATE_TODAY]]'				=> str_replace('-',' ',date('F-j-Y'))//current_date(time()->format('F j Y'))
+		);
+
+		$content = str_replace(array_keys($data_map), array_values($data_map), $content);
+
+		$data = array(
+				'content' => $content,
+				'generated_ind' => '1'
+		);
+
+		$this->common_model->update_with_job_id($data,$id,'hbl_generation');
+		$this->session->set_flashdata('msg', 'Document refreshed from database');
+		redirect(base_url('admin/jobs/edit_hbl/'.$id));
+		}
+
+		//bl_refresh_copy
+		public function hbl_refresh_copy($id)
+		{
+
+		$master_hbl_id = 0;
+
+		$content = $this->common_model->get_bl_content('content',$master_hbl_id,'hbl_generation');
+
+		$data = array(
+				'content' => $content,
+				'generated_ind' => '0'
+		);
+
+		$this->common_model->update_with_job_id($data,$id,'hbl_generation');
+		$this->session->set_flashdata('msg', 'Document refreshed with master copy');
+		redirect(base_url('admin/jobs/edit_hbl/'.$id));
+		}
+
+
+		public function create_hbl($id)
+		{
+
+				$posted_editor = $this->common_model->get_bl_content('content',$id,'hbl_generation');
+				$file_name = 'HBL_'.$id.'.pdf';
+				$path = './uploads/job_docs/'.$id.'/'.$file_name; //specify the file save location and the file name
+
+
+				$pdf = new \Mpdf\Mpdf(['format' => 'A3']);
+				$pdf->WriteHTML($posted_editor);
+				$pdf->Output($path,'F');
+				$url = 'uploads/job_docs/'.$id.'/'.$file_name;
+				$data = array(
+						'job_id' => $id,
+						'doc_type_id' => $this->common_model->get_doc_id_bl('HBL'),
+						'url' => $url,
+						'file_name' => $file_name,
+						'uploaded_by' => 'SYSTEM/'.$this->session->userdata('email'),
+						'uploaded_date' => current_datetime()
+				);
+
+				$data = $this->security->xss_clean($data);
+				$this->common_model->insert($data,'job_docs');
+
+				$data = array(
+						'uploaded' => '1',
+						'manually_uploaded' => '0'
+				);
+
+				$this->common_model->update_with_job_id($data,$id,'hbl_generation');
+
+				$this->session->set_flashdata('msg', 'HBL created and uploaded');
+				redirect(base_url('admin/jobs/job_docs/'.$id));
+		//	}
+
+	}
 
 
 
@@ -616,7 +826,13 @@ class Jobs extends CI_Controller {
 							 );
 
 							 $data = $this->security->xss_clean($data);
-							 $this->common_model->insert($data,'job_docs');
+						   $job_docs_id =  $this->common_model->insert($data,'job_docs');
+							 $template = $this->common_model->get_template_type($job_docs_id);
+
+							if($template->template == '1')
+					 		{
+					 			$this->common_model->set_template_table_manual_upload($id,$template->template_table);
+					 		}
 
 							 //Create a view containing just the text "Uploaded successfully"
 							 $this->session->set_flashdata('msg', 'File Uploaded');
@@ -629,6 +845,7 @@ class Jobs extends CI_Controller {
 				$data['jdocs'] = $this->common_model->get_jdocs_by_id($id, 'job_docs');
 				$data['dtypes'] = $this->common_model->get_available_doc_types($id);
 				$data['main_content'] = $this->load->view('admin/jobs/job_docs', $data, TRUE);
+				$data['recentjobs'] = $this->common_model->recent_jobs($this->session->userdata('id'));
 				$this->load->view('admin/index', $data);
 
 		}
@@ -664,7 +881,7 @@ private function set_upload_options($id){
 
 
 
-		public function delete($id)
+	/*	public function delete($id)
     {
       // if (($this->common_model->get_constrain('customers','mission_id',$id)) > 0) {
       //   $this->session->set_flashdata('error_msg', 'Missions with customers Cannot be deleted');
@@ -674,6 +891,7 @@ private function set_upload_options($id){
 				$this->session->set_flashdata('msg', 'Job Deleted');
         redirect(base_url('admin/missions'));
     }
+		*/
 
 
 
@@ -689,13 +907,18 @@ public function delete_doc($id)
 				{
 					 $this->session->set_flashdata('error_msg', display_errors());
 						redirect(base_url('admin/jobs/job_docs/'.$job_id));
-							 // $error = array('error' => $this->upload->display_errors());
-
-							 // $this->load->view('upload_form', $error);
 				}
 				else
 
+		$doc_type = $this->common_model->get_template_type($id);
 		$this->common_model->delete($id,'job_docs');
+
+		if($doc_type->template == '1')
+
+		{
+			$this->common_model->reset_template_table($job_id,$doc_type->template_table);
+		}
+
 		$this->session->set_flashdata('msg', 'Document Deleted');
 		redirect(base_url('admin/jobs/job_docs/'.$job_id));
 }
@@ -715,108 +938,7 @@ public function delete_email_queue($id)
 		redirect(base_url('admin/jobs/job_status/'.$jobid));
 }
 
-public function bl_test()
-	{
-		$mpdf = new \Mpdf\Mpdf(['format' => 'A3']);
-		$mpdf->use_kwt = true;
-		$html = '<title></title>
-		<meta http-equiv="content-type" content="text/html; charset=utf-8">
-		<div class="container" style="min-width: 245px;max-width: 1920px;position: relative;padding: 10px;border: 1px dotted #ddd;background-color: #eee;">
-		<div class="header" style="border: 1px dotted #ddd;min-height: 800px;border-radius: 5px 5px 0 0;background-color: #fff;padding: 10px 0;">
-		<h3 dir="ltr" style="text-align: center;">&nbsp; &nbsp; &nbsp;<strong><span style="font-size:16px;"> </span><span style="color:#0000FF;"><span style="font-size:14px;">AIR SEA LAND SHIPPING &amp; MOVING INC.</span><span style="font-size:16px;">&nbsp; </span>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span style="font-size:12px;">BILL OF LADING</span></span></strong></h3>
 
-		<h5 dir="ltr" style="text-align: center;"><span style="font-size:12px;"><font color="#0000ff"><b>FMC-OTI No.024377NF&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;FOR PORT-TO-PORT OR COMBINED TRANSPORT</b></font></span></h5>
-		<style type="text/css">.tg  {border-collapse:collapse;border-spacing:0;}
-		.tg td{font-family:Arial, sans-serif;border-left:none;border-right: none;font-size:14px;padding: 0px 2px;border-style:solid;border-width:1px;overflow:hidden;word-break:normal;border-color:black;}
-		.tg th{font-family:Arial, sans-serif;border-left:none;border-right: none;font-size:14px;font-weight:normal;padding:0px 2px;border-style:solid;border-width:1px;overflow:hidden;word-break:normal;border-color:black;}
-		.tg .tg-cpu2{border-color:#000000;vertical-align:top}
-		.tg .tg-us36{border-color:inherit;vertical-align:top}
-		@media screen and (max-width: 767px) {.tg {width: auto !important;}.tg col {width: auto !important;}.tg-wrap {overflow-x: auto;-webkit-overflow-scrolling: touch;}}
-		</style>
-		<div class="tg-wrap">
-		<table align="center" border="0" cellpadding="0" class="tg" dir="ltr" style="height:500px;width:800px;">
-			<tbody>
-				<tr>
-					<td class="tg-cpu2" colspan="2" rowspan="2">
-					<p><span style="font-size:10px;"><strong><span style="color:#0000FF;">SHIPPER</span></strong></span><br />
-					<span style="font-size:10px;"><strong>AIR SEA LAND SHIPPING &amp;MOVING INC<br />
-					AS AGENT FOR MR. IMMANUEL HAMUNYELA<br />
-					211 EAST 43RD ST, SUIT # 1206<br />
-					NEW YORK, NY 10017</strong></span></p>
-					</td>
-					<td class="tg-us36">
-					<p><strong style="font-family: Arial, sans-serif; font-size: 14px;"><span style="font-size:10px;"><span style="color: rgb(0, 0, 255);">REFERENCE<span style="font-size: 12px;"><span style="color: rgb(0, 0, 255);"> </span></span>NO</span></span><span style="font-size: 12px;"><span style="color: rgb(0, 0, 255);">.</span></span></strong><br />
-					<span style="font-size:10px;"><strong>003570-00</strong></span></p>
-					</td>
-					<td class="tg-us36">
-					<p><strong style="font-family: Arial, sans-serif; font-size: 14px;"><span style="font-size:10px;"><span style="color: rgb(0, 0, 255);">CARRIER BOOKING<span style="font-size: 12px;"><span style="color: rgb(0, 0, 255);"> </span></span>NO.</span></span></strong><br />
-					<span style="font-size:10px;"><strong>965840633</strong></span></p>
-					</td>
-				</tr>
-				<tr>
-					<td class="tg-us36" colspan="2">
-					<p><span style="font-size:10px;"><font color="#0000ff"><b>EXPORT REFERENCES</b></font></span><br />
-					<span style="font-size:10px;"><strong>003570-00</strong></span></p>
-					</td>
-				</tr>
-				<tr>
-					<td class="tg-us36" colspan="2" rowspan="2">
-					<p><strong style="font-family: Arial, sans-serif; font-size: 14px;"><span style="font-size:10px;"><span style="color: rgb(0, 0, 255);">CONSIGNEE - ( NOT NEOTIABLE UNLESS CONSIGNED TO<span style="font-size: 12px;"><span style="color: rgb(0, 0, 255);"> </span></span>ORDER)</span></span></strong><br />
-					<span style="font-size:10px;"><strong>MR.&nbsp;&nbsp;</strong><span style="font-family: Arial, sans-serif;"><strong>IMMANUEL HAMUNYELA<br />
-					C/O STUTTSFOED VAN LINES<br />
-					7-9 DANZING STREET<br />
-					LAFRENZ, WINDHOEK NAMIBIA<br />
-					TEL : 264 61 22 4691</strong></span></span></p>
-					</td>
-					<td class="tg-us36" colspan="2"><b style="color: rgb(0, 0, 255); font-family: Arial, sans-serif; font-size: 12px;"><span style="font-size:10px;">FORWARDING AGENT</span> - <span style="font-size:10px;">Reference</span></b><br />
-					<strong style="font-family: Arial, sans-serif; font-size: 10px;">003570-00</strong></td>
-				</tr>
-				<tr>
-					<td class="tg-us36" colspan="2"><span style="font-size:10px;"><font color="#0000ff"><b>POINT AND COUNTRY OF ORIGIN</b></font></span><br />
-					<span style="font-size: 10px;"><b>UNITED STATES OF AMERICA</b></span></td>
-				</tr>
-				<tr>
-					<td class="tg-us36" colspan="2" rowspan="2"><span style="font-size:10px;"><font color="#0000ff"><b>NOTIFY PARTY</b></font></span><br />
-					<b style="font-family: Arial, sans-serif; font-size: 10px;">WORLD NET LOGISTICS (PTY) LTD<br />
-					LANGER HEINRICH STREET, SAPHIER PARK UNIT 8 , NEW INDUS TRAIL AREA<br />
-					WALVIS BAY NAMIBIA.<br />
-					EMAIL: EXAMPLE@ONE.COM<br />
-					TEL: 2245666552</b></td>
-					<td class="tg-us36" colspan="2" rowspan="2"><b style="color: rgb(0, 0, 255); font-family: Arial, sans-serif; font-size: 12px;"><span style="font-size:10px;">ALSO NOTIFY - ROUTING</span> <span style="font-size:10px;">INSTRUCTIONS</span></b></td>
-				</tr><tr><span style="color:#0000FF;"></span></tr>
-				<tr>
-					<td class="tg-us36"><span style="font-size:10px;"><font color="#0000ff"><b>PIER</b></font></span></td>
-					<td class="tg-us36"><span style="font-size:10px;"><font color="#0000ff"><b>PLACE OF RECEIPT by PRE-CARRIER</b></font></span></td>
-					<td class="tg-us36" colspan="2" rowspan="3"><span style="font-size:10px;"><font color="#0000ff"><b>RELEASE AGENT</b></font></span></td>
-				</tr>
-				<tr>
-					<td class="tg-us36"><span style="font-size:10px;"><font color="#0000ff"><b>VESSEL AND VOYAGE NUMBER</b></font></span><br />
-					<span style="font-size: 10px;"><b>CONTI EVEREST 832E</b></span></td>
-					<td class="tg-us36"><span style="font-size:10px;"><font color="#0000ff"><b>PORT OF LOADING</b></font></span><br />
-					<span style="font-size: 10px;"><b>NEWARK</b></span></td>
-				</tr>
-				<tr>
-					<td class="tg-us36"><span style="font-size:10px;"><font color="#0000ff"><b>PORT OF DISCHARGE</b></font></span><br />
-					<span style="font-size: 10px;"><b>WALVIS BAY, NAMIBIA</b></span></td>
-					<td class="tg-us36"><span style="font-size:10px;"><font color="#0000ff"><b>PLACE OF DELIVERY</b></font></span><br />
-					<b style="font-family: Arial, sans-serif; font-size: 10px;">WALVIS BAY, NAMIBIA</b></td>
-				</tr>
-			</tbody>
-		</table>
-		</div>
-
-		<p dir="ltr">&nbsp;</p>
-
-		<p dir="ltr">&nbsp;</p>
-		</div>
-
-		<p dir="ltr" style="text-align: center;"><span style="font-size: 12px;"><b>www.airsealandinc.net</b></span></p>
-		</div>';
-		$mpdf->use_kwt = true;
-		$mpdf->WriteHTML($html);
-		$mpdf->Output(); // opens in browser
-	//	$mpdf->Output('arjun.pdf','D'); // it downloads the file into the user system, with give name
-	}
 
 
 

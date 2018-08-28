@@ -46,66 +46,68 @@
     <!-- Start Page Content -->
     <!-- ============================================================== -->
 
-    <a href="<?php echo base_url('admin/user/all_user_list') ?>">
+  <!--  <a href="//<?php echo base_url('admin/user/all_user_list') ?>"> -->
     <div class="row">
         <!-- Column -->
+
         <div class="col-lg-3 col-md-6">
-            <div class="card">
+            <a href="<?php echo base_url('admin/jobs/jobs_in_water') ?>"><div class="card">
                 <div class="d-flex flex-row">
                     <div class="p-10 bg-info">
-                        <h3 class="text-white box m-b-0"><i class="fa fa-users fa-2x"></i></h3></div>
+                        <h3 class="text-white box m-b-0"><i class="fa fa-ship fa-2x"></i></h3></div>
                     <div class="align-self-center m-l-20">
-                        <h3 class="m-b-0 text-info"><?php echo $count->total; ?></h3>
-                        <h5 class="text-muted m-b-0">Total User</h5>
+                        <h3 class="m-b-0 text-info"><?php echo $jw; ?></h3>
+                        <h5 class="text-muted m-b-0">Jobs In Water</h5>
                     </div>
                 </div>
-            </div>
+            </div></a>
+        </div>
+
+        <!-- Column -->
+        <!-- Column -->
+        <div class="col-lg-3 col-md-6">
+            <a href="<?php echo base_url('admin/jobs/pending_emails') ?>"><div class="card">
+                <div class="d-flex flex-row">
+                    <div class="p-10 bg-warning">
+                        <h3 class="text-white box m-b-0"><i class="fa fa-envelope-open-o fa-2x"></i></h3></div>
+                    <div class="align-self-center m-l-20">
+                        <h3 class="m-b-0 text-info"><?php echo $eq; ?></h3>
+                        <h5 class="text-muted m-b-0">Pending Emails</h5>
+                    </div>
+                </div>
+            </div></a>
         </div>
         <!-- Column -->
         <!-- Column -->
         <div class="col-lg-3 col-md-6">
-            <div class="card">
+            <a href="<?php echo base_url('admin/jobs/new_jobs') ?>"><div class="card">
                 <div class="d-flex flex-row">
                     <div class="p-10 bg-success">
-                        <h3 class="text-white box m-b-0"><i class="fa fa-user fa-2x"></i></h3></div>
+                        <h3 class="text-white box m-b-0"><i class="fa fa-briefcase fa-2x"></i></h3></div>
                     <div class="align-self-center m-l-20">
-                        <h3 class="m-b-0 text-info"><?php echo $count->active_user; ?></h3>
-                        <h5 class="text-muted m-b-0">Active User</h5>
+                        <h3 class="m-b-0 text-info"><?php echo $nj; ?></h3>
+                        <h5 class="text-muted m-b-0">New Jobs</h5>
                     </div>
                 </div>
-            </div>
+            </div></a>
         </div>
         <!-- Column -->
         <!-- Column -->
         <div class="col-lg-3 col-md-6">
-            <div class="card">
+            <a href="<?php echo base_url('admin/jobs/jobs_bl_pending') ?>"><div class="card">
                 <div class="d-flex flex-row">
                     <div class="p-10 bg-danger">
-                        <h3 class="text-white box m-b-0"><i class="fa fa-user-times fa-2x"></i></h3></div>
+                        <h3 class="text-white box m-b-0"><i class="fa fa fa-folder-open fa-2x"></i></h3></div>
                     <div class="align-self-center m-l-20">
-                        <h3 class="m-b-0 text-info"><?php echo $count->inactive_user; ?></h3>
-                        <h5 class="text-muted m-b-0">Inactive User</h5>
+                        <h3 class="m-b-0 text-info"><?php echo $bl; ?></h3>
+                        <h5 class="text-muted m-b-0">BL Pending</h5>
                     </div>
                 </div>
-            </div>
-        </div>
-        <!-- Column -->
-        <!-- Column -->
-        <div class="col-lg-3 col-md-6">
-            <div class="card">
-                <div class="d-flex flex-row">
-                    <div class="p-10 bg-primary">
-                        <h3 class="text-white box m-b-0"><i class="fa fa-user-circle fa-2x"></i></h3></div>
-                    <div class="align-self-center m-l-20">
-                        <h3 class="m-b-0 text-info"><?php echo $count->admin; ?></h3>
-                        <h5 class="text-muted m-b-0">Total Admin</h5>
-                    </div>
-                </div>
-            </div>
+            </div></a>
         </div>
         <!-- Column -->
     </div>
-    </a>
+  <!--  </a> -->
 
     <!-- Row -->
     <div class="row">
@@ -117,7 +119,7 @@
                         <table id="example23" class="display nowrap table table-hover table-striped table-bordered" cellspacing="0" width="100%">
                             <thead>
                                 <tr>
-                                    <th>ASL Reference #</th>
+                                    <th>ASL Ref #</th>
                                     <th>Invoice #</th>
                                     <th>Customer</th>
                                     <th>Mission</th>
@@ -152,7 +154,7 @@
                             <?php $i = 1; foreach ($jobs as $job): ?>
 
                                 <tr>
-                                    <td><?php echo $job['asl_reference_no']; ?></td>
+                                    <td><a href="<?php echo base_url('admin/jobs/edit/'.$job['id']) ?>" data-toggle="tooltip" data-original-title="Edit Job"><?php echo $job['asl_reference_no']; ?> </a></td>
                                     <td><?php echo $job['invoice_number']; ?></td>
                                     <td><?php echo $job['customer']; ?></td>
                                     <td><?php echo $job['mission_name']; ?></td>
@@ -183,69 +185,6 @@
 
     </div>
     <!-- Row -->
-    <div class="row">
-        <!-- Column -->
-        <div class="col-lg-8">
-            <div class="card">
-                <div class="card-body">
-                    <ul class="list-inline pull-right">
-                        <li>
-                            <h6 class="text-muted"><i class="fa fa-circle m-r-5" style="color:#51bdff"></i>2015</h6>
-                        </li>
-                        <li>
-                            <h6 class="text-muted"><i class="fa fa-circle m-r-5" style="color:#11a0f8"></i>2016</h6>
-                        </li>
-                        <li>
-                            <h6 class="text-muted"><i class="fa fa-circle m-r-5 text-info"></i>2017</h6>
-                        </li>
-                    </ul>
-                    <h4 class="card-title">Total Revenue</h4>
-                    <div class="clear"></div>
-                    <div class="total-sales" style="height: 365px;"></div>
-                </div>
-            </div>
-        </div>
-        <!-- Column -->
-        <div class="col-lg-4">
-            <div class="row">
-                <div class="col-12">
-                    <div class="card">
-                        <div class="card-body">
-                            <h4 class="card-title">Sales Prediction</h4>
-                            <div class="d-flex flex-row">
-                                <div class="align-self-center">
-                                    <span class="display-6 text-primary">$3528</span>
-                                    <h6 class="text-muted">10% Increased</h6>
-                                    <h5>(150-165 Sales)</h5>
-                                </div>
-                                <div class="ml-auto">
-                                    <div id="gauge-chart" style=" width:150px; height:150px;"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-12">
-                    <div class="card">
-                        <div class="card-body">
-                            <h4 class="card-title">Sales Difference</h4>
-                            <div class="d-flex flex-row">
-                                <div class="align-self-center">
-                                    <span class="display-6 text-success">$4316</span>
-                                    <h6 class="text-muted">10% Increased</h6>
-                                    <h5>(150-165 Sales)</h5>
-                                </div>
-                                <div class="ml-auto">
-                                    <div class="ct-chart" style="width:120px; height: 120px;"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- Column -->
-    </div>
 
     <!-- Row -->
 

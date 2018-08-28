@@ -44,7 +44,7 @@
 <div class="row">
 
     <div class="col-sm-10 col-sm-offset-3 col-md-9 col-md-offset-2 main">
-        <h4 class="page-header">Edit BL </h4>
+        <h4 class="page-header">Edit MBL </h4>
 
         <?= form_open_multipart(base_url('admin/jobs/edit_bl/'.$id), array('class' => 'form-horizontal')) ?>
 

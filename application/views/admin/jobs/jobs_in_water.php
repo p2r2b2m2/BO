@@ -10,7 +10,7 @@
         <div class="col-md-5 col-8 align-self-center">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="javascript:void(0)">Home</a></li>
-                <li class="breadcrumb-item active"><?php echo $page_title; ?></li>
+                <li class="breadcrumb-item active">All Jobs</li>
             </ol>
         </div>
     </div>

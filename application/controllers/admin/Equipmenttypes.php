@@ -6,6 +6,7 @@ class Equipmenttypes extends CI_Controller {
     {
         parent::__construct();
         check_login_user();
+        check_employee();
         $this->load->model('common_model');
     }
 
@@ -18,6 +19,7 @@ class Equipmenttypes extends CI_Controller {
         $data['page_title'] = 'Equipment Types';
         $data['equipmenttypes'] = $this->common_model->get_equipment_types();
         $data['main_content'] = $this->load->view('admin/equipment_types/equipment_types',$data,TRUE);
+        $data['recentjobs'] = $this->common_model->recent_jobs($this->session->userdata('id'));
         $this->load->view('admin/index',$data);
     }
 

@@ -135,11 +135,20 @@
                                     <td class="text-nowrap">
 
                                         <a data-toggle="modal" data-target="#editModal_<?php echo $row['id'];?>" href="#" data-toggle="tooltip" data-original-title="Edit"> <i class="fa fa-pencil text-success m-r-10"></i> </a>
+                                        <?php if ($row['type'] == 'MBL' || $row['type'] == 'HBL' ): ?>
+                                          <a id="delete" href="#"  data-toggle="tooltip" data-original-title="HBL and MBL cannot be deleted"> <i class="fa fa-trash text-danger m-r-10"></i> </a>
+                                        <?php else: ?>
+                                          <a id="delete" href="<?php echo base_url('admin/doctypes/delete/'.$row['id']) ?>"  data-toggle="tooltip" data-original-title="Delete"> <i class="fa fa-trash text-danger m-r-10"></i> </a>
+                                        <?php endif ?>
 
-                                        <a id="delete" href="<?php echo base_url('admin/doctypes/delete/'.$row['id']) ?>"  data-toggle="tooltip" data-original-title="Delete"> <i class="fa fa-trash text-danger m-r-10"></i> </a>
 
                                         <?php if ($row['status'] == 1): ?>
+                                          <?php if ($row['type'] == 'MBL' || $row['type'] == 'HBL' ): ?>
+                                            <a href="#" data-toggle="tooltip" data-original-title="HBL and MBL cannot be deactived"> <i class="fa fa-close text-danger m-r-10"></i> </a>
+                                          <?php else: ?>
                                             <a href="<?php echo base_url('admin/doctypes/deactive/'.$row['id']) ?>" data-toggle="tooltip" data-original-title="Deactive"> <i class="fa fa-close text-danger m-r-10"></i> </a>
+                                          <?php endif ?>
+
                                         <?php else: ?>
                                             <a href="<?php echo base_url('admin/doctypes/active/'.$row['id']) ?>" data-toggle="tooltip" data-original-title="Active"> <i class="fa fa-check text-info m-r-10"></i> </a>
                                         <?php endif ?>
@@ -191,7 +200,12 @@
                 <div class="form-group">
                     <label for="type" class="control-label">Type Code:<span class="text-danger"></span></label>
                     <div class="controls">
-                    <input type="text" class="form-control" name="type" value="<?php echo $row['type']; ?>" required data-validation-required-message=" Type Code is required" >
+                      <?php if ($row['type'] == 'MBL' || $row['type'] == 'HBL' ): ?>
+                        <input type="text" class="form-control" name="type" value="<?php echo $row['type']; ?>" required data-validation-required-message=" Type Code is required" readonly>
+                      <?php else: ?>
+                        <input type="text" class="form-control" name="type" value="<?php echo $row['type']; ?>" required data-validation-required-message=" Type Code is required" >
+                      <?php endif ?>
+
                     </div>
                 </div>
 

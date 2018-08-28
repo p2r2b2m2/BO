@@ -5,6 +5,7 @@ class User extends CI_Controller {
 	public function __construct(){
         parent::__construct();
         check_login_user();
+				check_employee();
        $this->load->model('common_model');
        $this->load->model('login_model');
     }
@@ -17,6 +18,7 @@ class User extends CI_Controller {
         $data['country'] = $this->common_model->select('country');
         $data['power'] = $this->common_model->get_all_power('user_power');
         $data['main_content'] = $this->load->view('admin/user/add', $data, TRUE);
+				$data['recentjobs'] = $this->common_model->recent_jobs($this->session->userdata('id'));
         $this->load->view('admin/index', $data);
     }
 
@@ -75,6 +77,7 @@ class User extends CI_Controller {
         $data['country'] = $this->common_model->select('country');
         $data['count'] = $this->common_model->get_user_total();
         $data['main_content'] = $this->load->view('admin/user/users', $data, TRUE);
+				$data['recentjobs'] = $this->common_model->recent_jobs($this->session->userdata('id'));
         $this->load->view('admin/index', $data);
     }
 
@@ -116,6 +119,7 @@ class User extends CI_Controller {
         $data['power'] = $this->common_model->select('user_power');
         $data['country'] = $this->common_model->select_country('country');
         $data['main_content'] = $this->load->view('admin/user/edit_user', $data, TRUE);
+				$data['recentjobs'] = $this->common_model->recent_jobs($this->session->userdata('id'));
         $this->load->view('admin/index', $data);
 
     }
@@ -158,6 +162,7 @@ class User extends CI_Controller {
     {
         $data['powers'] = $this->common_model->get_all_power('user_power');
         $data['main_content'] = $this->load->view('admin/user/user_power', $data, TRUE);
+				$data['recentjobs'] = $this->common_model->recent_jobs($this->session->userdata('id'));
         $this->load->view('admin/index', $data);
     }
 

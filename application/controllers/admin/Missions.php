@@ -5,6 +5,7 @@ class Missions extends CI_Controller {
 	public function __construct(){
         parent::__construct();
         check_login_user();
+				check_employee();
         $this->load->model('common_model');
         $this->load->model('login_model');
     }
@@ -16,6 +17,7 @@ class Missions extends CI_Controller {
         $data['page_title'] = 'Missions';
         $data['missions'] = $this->common_model->get_all_missions();
         $data['main_content'] = $this->load->view('admin/missions/all_missions', $data, TRUE);
+				$data['recentjobs'] = $this->common_model->recent_jobs($this->session->userdata('id'));
         $this->load->view('admin/index', $data);
     }
 
@@ -45,6 +47,7 @@ class Missions extends CI_Controller {
 				$data['page_title'] = 'Missions';
 				//$data['categories'] = $this->common_model->get_categories();
 				$data['main_content'] = $this->load->view('admin/missions/add_mission', $data, TRUE);
+				$data['recentjobs'] = $this->common_model->recent_jobs($this->session->userdata('id'));
 				$this->load->view('admin/index', $data);
 		}
 
@@ -73,6 +76,7 @@ class Missions extends CI_Controller {
 				$data['mission'] = $this->common_model->get_mission_by_id($id, 'missions');
 				//$data['categories'] = $this->common_model->get_categories();
 				$data['main_content'] = $this->load->view('admin/missions/edit_mission', $data, TRUE);
+				$data['recentjobs'] = $this->common_model->recent_jobs($this->session->userdata('id'));
 				$this->load->view('admin/index', $data);
 
 		}

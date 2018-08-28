@@ -59,6 +59,26 @@ class Login_model extends CI_Model {
         }
     }
 
+    //validate_customer
+    function validate_customer(){
+
+        $this->db->select('cl.*,c.first_name,c.email');
+        $this->db->from('customer_login cl');
+        $this->db->join('customers c', 'c.id = cl.customer_id');
+        $this->db->where('c.email', $this->input->post('user_name'));
+        $this->db->where('cl.password', md5($this->input->post('password')));
+        $this->db->where('cl.status', '1');
+        $this->db->limit(1);
+        $query = $this->db->get();
+
+        if($query->num_rows() == 1){
+           return $query->result();
+        }
+        else{
+            return false;
+        }
+    }
+
 
 
 }

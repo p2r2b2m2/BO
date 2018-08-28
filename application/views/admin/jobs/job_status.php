@@ -10,7 +10,7 @@
         <div class="col-md-5 col-8 align-self-center">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="javascript:void(0)">Home</a></li>
-                <li class="breadcrumb-item active">Edit Job</li>
+                <li class="breadcrumb-item active">Status Updates And Notifications</li>
             </ol>
         </div>
 
@@ -180,7 +180,7 @@
                                                                 <td><?php echo $row['subject']; ?></td>
                                                                 <td>
                                                                   <?php if ($row['sent'] == 1): ?>
-                                                                    <a href="" data-toggle="tooltip" data-original-title="Email Sent"> <i class="fa fa-folder-open-o text-info m-r-10 disabled"></i> </a></th>
+                                                                    <a href="#" data-toggle="tooltip" data-original-title="Email Sent"> <i class="fa fa-folder-open-o text-info m-r-10 disabled"></i> </a></th>
                                                                   <?php else: ?>
                                                                     <a href="<?php echo base_url('admin/jobs/edit_email/'.$row['id']) ?>" data-toggle="tooltip" data-original-title="Edit Before Sending"> <i class="fa fa-folder-open text-info m-r-10"></i> </a></th>
                                                                   <?php endif ?>
@@ -251,7 +251,7 @@
                                                           <tr>
                                                               <td><?php echo $row['status']; ?></td>
                                                               <td><?php echo $row['comment']; ?></td>
-                                                             
+
                                                               <td><?php echo $row['updated_on']; ?></td>
 
                                                               <td class="text-nowrap">
