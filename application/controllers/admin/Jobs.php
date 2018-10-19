@@ -71,7 +71,7 @@ class Jobs extends CI_Controller {
 		}
 
 
-		public function add()
+		public function add($cid)
 		{
 				if ($_POST) {
 
@@ -152,8 +152,11 @@ class Jobs extends CI_Controller {
 				$data['page_title'] = 'Jobs';
 				$data['customers'] = $this->common_model->select_customers();
 				$data['jobtypes'] = $this->common_model->select_job_types();
+				$data['missions'] = $this->common_model->select_missions('missions','id');
+				$data['newcustomer'] = $cid;
 				$data['main_content'] = $this->load->view('admin/jobs/add_job', $data, TRUE);
 				$data['recentjobs'] = $this->common_model->recent_jobs($this->session->userdata('id'));
+
 				$this->load->view('admin/index', $data);
 		}
 
@@ -938,6 +941,27 @@ public function delete_email_queue($id)
 		redirect(base_url('admin/jobs/job_status/'.$jobid));
 }
 
+public function delete_status_history($id)
+{
+
+	 $jobid = $this->common_model->get_job_id_by_children_id($id,'status_history');
+
+	 if (($this->common_model->get_constrain('email_queue','status_history_id',$id))) {
+		 $this->session->set_flashdata('error_msg', 'Please delete the email queue for this status first.');
+		 redirect(base_url('admin/jobs/job_status/'.$jobid));
+	 }
+
+	  $iscurrent = $this->common_model->iscurrent_status($jobid,$id);
+		if($iscurrent){
+   //unlink from job if this is the current status
+    $this->common_model->unlink_status_history($jobid,$id);
+	 //Get the last available status update as of now for the job and link it to the job(May or may not have one available)
+	  $this->common_model->link_max_status_history($jobid,$id);
+	  }
+		$this->common_model->delete($id,'status_history');
+		$this->session->set_flashdata('msg', 'Status Deleted');
+		redirect(base_url('admin/jobs/job_status/'.$jobid));
+}
 
 
 

@@ -120,11 +120,11 @@
     <script src="<?php echo base_url() ?>assets/plugins/bootstrap/js/popper.min.js"></script>
     <script src="<?php echo base_url() ?>assets/plugins/bootstrap/js/bootstrap.min.js"></script>
     <!-- slimscrollbar scrollbar JavaScript -->
-    <script src="<?php echo base_url() ?>js/jquery.slimscroll.js"></script>
+    <script src="<?php echo base_url() ?>assets/js/jquery.slimscroll.js"></script>
     <!--Wave Effects -->
-    <script src="<?php echo base_url() ?>js/waves.js"></script>
+    <script src="<?php echo base_url() ?>assets/js/waves.js"></script>
     <!--Menu sidebar -->
-    <script src="<?php echo base_url() ?>js/sidebarmenu.js"></script>
+    <script src="<?php echo base_url() ?>assets/js/sidebarmenu.js"></script>
     <!--stickey kit -->
     <!-- Sweet-Alert  -->
     <script src="<?php echo base_url() ?>assets/plugins/sweetalert/sweetalert.min.js"></script>

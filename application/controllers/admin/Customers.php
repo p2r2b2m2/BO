@@ -25,9 +25,9 @@ class Customers extends CI_Controller {
 		{
 				if ($_POST) {
 
+					$password = $this->random_password();
 					$data = array(
-							'first_name' => $_POST['first_name'],
-							'last_name' => $_POST['last_name'],
+							'name' => $_POST['name'],
 							'mission_id' => $_POST['mission_id'],
 							'email' => $_POST['email'],
 							'phone' => $_POST['phone'],
@@ -35,16 +35,26 @@ class Customers extends CI_Controller {
 							'city' => $_POST['city'],
 							'state' => $_POST['state'],
 							'zip' => $_POST['zip'],
-							'country_id' => $_POST['country_id']
+							'country_id' => $_POST['country_id'],
+							'password' => $password
 					);
 
 						$data = $this->security->xss_clean($data);
 						$email = $this->common_model->check_email_customer($_POST['email']);
 
+
             if (empty($email)) {
 						$id = $this->common_model->insert($data, 'customers');
 
-						//-- image upload code
+						//-- Login creation
+						$password = md5($password);
+						$data1 = array(
+								'customer_id' => $id,
+								'password' => $password
+						);
+
+
+						$id1 = $this->common_model->insert($data1, 'customer_login');
 
 
 						$this->session->set_flashdata('msg', 'Customer added Successfully');
@@ -73,8 +83,7 @@ class Customers extends CI_Controller {
 				if ($_POST) {
 
 						$data = array(
-								'first_name' => $_POST['first_name'],
-								'last_name' => $_POST['last_name'],
+								'name' => $_POST['name'],
 								'mission_id' => $_POST['mission_id'],
 								'email' => $_POST['email'],
 								'phone' => $_POST['phone'],
@@ -86,10 +95,19 @@ class Customers extends CI_Controller {
 						);
 
 						$data = $this->security->xss_clean($data);
+
+						$email = $this->common_model->check_email_customer_edit($_POST['email'],$id);
+
+						if (empty($email)) {
 						$this->common_model->update($data, $id, 'customers');
 
 						$this->session->set_flashdata('msg', 'Customer details edited Successfully');
 						redirect(base_url('admin/customers'));
+					  }
+						else {
+							$this->session->set_flashdata('error_msg', 'Email is assigned to a different customer');
+							redirect(base_url('admin/customers/edit/'.$id));
+						}
 
 				}
 
@@ -102,6 +120,62 @@ class Customers extends CI_Controller {
 
 		}
 
+		public function easy_customer(){
+
+			if ($_POST) {
+
+				$password = $this->random_password();
+				$data = array(
+						'name' => $_POST['name'],
+						'mission_id' => $_POST['mission_id'],
+						'email' => $_POST['email'],
+						'password' => $password
+				);
+
+					$data = $this->security->xss_clean($data);
+					$email = $this->common_model->check_email_customer($_POST['email']);
+
+
+					if (empty($email)) {
+					$id = $this->common_model->insert($data, 'customers');
+
+					//-- Login creation
+					$password = md5($password);
+					$data1 = array(
+							'customer_id' => $id,
+							'password' => $password
+					);
+
+
+					$id1 = $this->common_model->insert($data1, 'customer_login');
+
+
+					$this->session->set_flashdata('msg', 'Customer added Successfully');
+					redirect(base_url('admin/jobs/add/'.$id));
+				}
+				else
+				{
+					$this->session->set_flashdata('error_msg', 'Email already exist, try another email');
+					redirect(base_url('admin/jobs/add/0'));
+				}
+			}
+
+		}
+
+function random_password()
+{
+    $alphabet = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
+    $password = array();
+    $alpha_length = strlen($alphabet) - 1;
+    for ($i = 0; $i < 8; $i++)
+    {
+        $n = rand(0, $alpha_length);
+        $password[] = $alphabet[$n];
+    }
+    return implode($password);
+}
+
+
 
 		public function delete($id)
     {
@@ -110,6 +184,7 @@ class Customers extends CI_Controller {
          redirect(base_url('admin/customers'));
        }
         $this->common_model->delete($id,'customers');
+				$this->common_model->delete_with_customer($id,'customer_login');
 				$this->session->set_flashdata('msg', 'Customer Deleted');
         redirect(base_url('admin/customers'));
     }

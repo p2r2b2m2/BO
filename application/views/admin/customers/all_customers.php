@@ -48,8 +48,7 @@
                         <table id="example23" class="display nowrap table table-hover table-striped table-bordered" cellspacing="0" width="100%">
                             <thead>
                                 <tr>
-                                    <th>First Name</th>
-                                    <th>Last Name</th>
+                                    <th>Name</th>
                                     <th>Mission</th>
                                     <th>Email</th>
                                     <th>Phone</th>
@@ -58,8 +57,7 @@
                             </thead>
                             <tfoot>
                                 <tr>
-                                  <th>First Name</th>
-                                  <th>Last Name</th>
+                                  <th>Name</th>
                                   <th>Mission</th>
                                   <th>Email</th>
                                   <th>Phone</th>
@@ -71,8 +69,7 @@
                             <?php $i = 1; foreach ($customers as $customer): ?>
 
                                 <tr>
-                                    <td><?php echo $customer['first_name']; ?></td>
-                                    <td><?php echo $customer['last_name']; ?></td>
+                                    <td><?php echo $customer['name']; ?></td>
                                     <td><?php echo $customer['mission']; ?></td>
                                     <td><?php echo $customer['email']; ?></td>
                                     <td><?php echo $customer['phone']; ?></td>

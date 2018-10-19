@@ -62,7 +62,7 @@ class Login_model extends CI_Model {
     //validate_customer
     function validate_customer(){
 
-        $this->db->select('cl.*,c.first_name,c.email');
+        $this->db->select('cl.*,c.name,c.email');
         $this->db->from('customer_login cl');
         $this->db->join('customers c', 'c.id = cl.customer_id');
         $this->db->where('c.email', $this->input->post('user_name'));

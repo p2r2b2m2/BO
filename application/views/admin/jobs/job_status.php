@@ -9,7 +9,8 @@
     <div class="row page-titles">
         <div class="col-md-5 col-8 align-self-center">
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="javascript:void(0)">Home</a></li>
+                <li class="breadcrumb-item"><a href="<?php echo base_url('admin/jobs'); ?>">Jobs</a></li>
+                <li class="breadcrumb-item"><a href="javascript:void(0)"><?php echo $jobs->id; ?></a></li>
                 <li class="breadcrumb-item active">Status Updates And Notifications</li>
             </ol>
         </div>
@@ -70,8 +71,8 @@
                     <div class="tab-content tabcontent-border">
                         <div class="tab-pane active" role="tabpanel">
                             <div class="p-20">
-                              <h6 class="card-subtitle">Some status types are configured to send customer email notifications.</h6>
-                              <h6 class="card-subtitle">You can use the email queue to trigger emails to the customers to send status updates.</h6>
+                              <h6 class="card-subtitle">Some status types are configured to send email notifications to the customer.</h6>
+                              <h6 class="card-subtitle">You can use the email queue to edit/send emails to the customers on status updates.</h6>
 
 
                               <div class="row">

@@ -9,8 +9,9 @@
     <div class="row page-titles">
         <div class="col-md-5 col-8 align-self-center">
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="javascript:void(0)">Home</a></li>
-                <li class="breadcrumb-item active">Edit Job</li>
+                <li class="breadcrumb-item"><a href="<?php echo base_url('admin/jobs'); ?>">Jobs</a></li>
+                <li class="breadcrumb-item"><a href="javascript:void(0)"><?php echo $jobs->id; ?></a></li>
+                <li class="breadcrumb-item active">Job Info</li>
             </ol>
         </div>
 
@@ -103,7 +104,7 @@
                                                   <option <?php echo $selec; ?>  value="<?php echo $customer['id']; ?>"><?php echo $customer['name']; ?></option>
                                               <?php endforeach ?>
                                           </select>
-                                          <small class="form-control-feedback"> In format of first name last name and mission. </small>
+                                          <small class="form-control-feedback"> In format of name and mission. </small>
                                         </div>
                                       </div>
                                 </div>
@@ -322,7 +323,6 @@
                         </div>
                         <div class="form-actions">
                             <button type="submit" class="btn btn-success"> <i class="fa fa-check"></i> Save</button>
-                            <button type="button" class="btn btn-inverse">Cancel</button>
                         </div>
                     </form>
                 </div>

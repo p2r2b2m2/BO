@@ -101,7 +101,7 @@
                             <!-- Dark Logo icon -->
 
                             <!-- Light Logo icon -->
-                            <img src="<?php echo base_url() ?>assets/images/logo-light-icon.png" alt="homepage" class="light-logo" />
+                          <span>  <img src="<?php echo base_url() ?>assets/images/logo.png" alt="homepage" class="light-logo" /></span>
                         </b>
                         <!--End Logo icon -->
                         <!-- Logo text -->
@@ -109,7 +109,8 @@
 
                          <img src="<?php echo base_url() ?>assets/images/logo-light-text.png" alt="homepage" class="dark-logo" />
 
-                         <img src="<?php echo base_url() ?>assets/images/logo-light-text.png" class="light-logo" alt="homepage" /></span> </a> -->
+                         <img src="<?php echo base_url() ?>assets/images/logo-light-text.png" class="light-logo" alt="homepage" /></span>  -->
+                         </a>
                 </div>
 
                 <!-- End Logo -->
@@ -157,13 +158,11 @@
                                             <div class="u-img"><img src="<?php echo base_url() ?>assets/images/users/1.jpg" alt="user"></div>
                                             <div class="u-text">
                                                 <h4><?php echo $this->session->userdata('name'); ?></h4>
-                                                <p class="text-muted"><?php echo $this->session->userdata('email'); ?></p><a href="profile.html" class="btn btn-rounded btn-danger btn-sm">View Profile</a></div>
+                                                <p class="text-muted"><?php echo $this->session->userdata('email'); ?></p><a href="#" class="btn btn-rounded btn-danger btn-sm">Manage Tasks</a></div>
                                         </div>
                                     </li>
                                     <li role="separator" class="divider"></li>
-                                    <li><a href="#"><i class="ti-user"></i> My Profile</a></li>
-                                    <li role="separator" class="divider"></li>
-                                    <li><a href="#"><i class="ti-settings"></i> Account Setting</a></li>
+                                    <li><a href="<?php echo base_url('admin/user/changepass') ?>"><i class="ti-settings"></i> Change Password</a></li>
                                     <li role="separator" class="divider"></li>
                                     <li><a href="<?php echo base_url('auth/logout') ?>"><i class="fa fa-power-off"></i> Logout</a></li>
                                 </ul>
@@ -217,7 +216,7 @@
                             <a class="has-arrow waves-effect waves-dark" href="#" aria-expanded="false"><i class="mdi mdi-menu"></i><span class="hide-menu">Jobs</span></a>
                             <ul aria-expanded="false" class="collapse">
                                 <li><a href="<?php echo base_url('admin/jobs') ?>"><i class="fa fa-angle-right"></i> All Jobs </a></li>
-                                <li><a href="<?php echo base_url('admin/jobs/add') ?>"><i class="fa fa-angle-right"></i> Add New Job</a></li>
+                                <li><a href="<?php echo base_url('admin/jobs/add/0') ?>"><i class="fa fa-angle-right"></i> Add New Job</a></li>
                             </ul>
                         </li>
 
@@ -371,8 +370,7 @@
     <script src="<?php echo base_url() ?>assets/plugins/calendar/dist/cal-init.js"></script>
 
     <!-- sparkline chart -->
-    <script src="<?php echo base_url() ?>assets/plugins/sparkline/jquery.sparkline.min.js"></script>
-    <script src="<?php echo base_url() ?>assets/js/dashboard4.js"></script>
+
 
     <!-- Sweet-Alert  -->
     <script src="<?php echo base_url() ?>assets/plugins/sweetalert/sweetalert.min.js"></script>
@@ -385,13 +383,13 @@
 
 
 
-    <!--Morris JavaScript -->
+    <!--Morris JavaScript
     <script src="<?php echo base_url() ?>assets/plugins/raphael/raphael-min.js"></script>
     <script src="<?php echo base_url() ?>assets/plugins/morrisjs/morris.js"></script>
-    <script src="<?php echo base_url() ?>assets/js/morris-data.js"></script>
+    <script src="<?php echo base_url() ?>assets/js/morris-data.js"></script> -->
     <!-- Chart JS -->
 
-    <script src="<?php echo base_url() ?>assets/plugins/Chart.js/chartjs.init.js"></script>
+    <!-- <script src="<?php echo base_url() ?>assets/plugins/Chart.js/chartjs.init.js"></script>-->
     <script src="<?php echo base_url() ?>assets/plugins/Chart.js/Chart.min.js"></script>
 
     <!-- Invoice print JS -->
@@ -418,8 +416,8 @@
     <script src="http://cdn.datatables.net/buttons/1.2.2/js/dataTables.buttons.min.js"></script>
     <script src="http://cdn.datatables.net/buttons/1.2.2/js/buttons.flash.min.js"></script>
     <script src="http://cdnjs.cloudflare.com/ajax/libs/jszip/2.5.0/jszip.min.js"></script>
-    <script src="http://cdn.rawgit.com/bpampuch/pdfmake/0.1.18/build/pdfmake.min.js"></script>
-    <script src="http://cdn.rawgit.com/bpampuch/pdfmake/0.1.18/build/vfs_fonts.js"></script>
+    <script src="<?php echo base_url() ?>assets/js/pdfmake.min.js"></script>
+    <script src="<?php echo base_url() ?>assets/js/vfs_fonts.js"></script>
     <script src="http://cdn.datatables.net/buttons/1.2.2/js/buttons.html5.min.js"></script>
     <script src="http://cdn.datatables.net/buttons/1.2.2/js/buttons.print.min.js"></script>
     <script>
@@ -510,7 +508,7 @@
     <script src="<?php echo base_url() ?>assets/plugins/bootstrap-select/bootstrap-select.min.js" type="text/javascript"></script>
     <script src="<?php echo base_url() ?>assets/plugins/bootstrap-tagsinput/dist/bootstrap-tagsinput.min.js"></script>
     <script src="<?php echo base_url() ?>assets/plugins/bootstrap-touchspin/dist/jquery.bootstrap-touchspin.min.js" type="text/javascript"></script>
-
+    <script src="<?php echo base_url() ?>assets/plugins/multiselect/js/jquery.multi-select.js" type="text/javascript"></script>
     <script>
     jQuery(document).ready(function() {
 
@@ -629,9 +627,9 @@
             escapeMarkup: function(markup) {
                 return markup;
             }, // let our custom formatter work
-            minimumInputLength: 1,
-            templateResult: formatRepo, // omitted for brevity, see the source of this page
-            templateSelection: formatRepoSelection // omitted for brevity, see the source of this page
+            minimumInputLength: 1
+            //templateResult: formatRepo, // omitted for brevity, see the source of this page
+          // templateSelection: formatRepoSelection // omitted for brevity, see the source of this page
         });
     });
     </script>
@@ -649,6 +647,27 @@
            $('.delete_msg').delay(3000).slideUp();
         });
     </script>
+
+    <script>
+      function DisableAfterOneClick()
+      {
+      console.log("onclick");
+        if ($(this).attr("disabled"))
+          return false;
+        else
+        {
+          if ($(this).data("disabledtext")) $(this).text($(this).data("disabledtext"));
+          $(this).attr("disabled","");
+          if ($(this).attr("href")) window.location = $(this).attr("href");
+          return false;
+        }
+      }
+
+      $(function () {
+      $('.disableafteroneclick').on('click', DisableAfterOneClick);
+      });
+
+  </script>
 
 
 

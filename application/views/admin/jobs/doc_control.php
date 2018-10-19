@@ -9,7 +9,8 @@
     <div class="row page-titles">
         <div class="col-md-5 col-8 align-self-center">
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="javascript:void(0)">Home</a></li>
+                <li class="breadcrumb-item"><a href="<?php echo base_url('admin/jobs'); ?>">Jobs</a></li>
+                <li class="breadcrumb-item"><a href="javascript:void(0)"><?php echo $jobs->job_id; ?></a></li>
                 <li class="breadcrumb-item active">Document Control</li>
             </ol>
         </div>
@@ -315,7 +316,6 @@
                         </div>
                         <div class="form-actions">
                             <button type="submit" class="btn btn-success"> <i class="fa fa-check"></i> Save</button>
-                            <button type="button" class="btn btn-inverse">Cancel</button>
                         </div>
                     </form>
                 </div>

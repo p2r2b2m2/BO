@@ -1,8 +1,9 @@
-SELECT j.id,j.asl_reference_no,j.invoice_number,CONCAT(first_name,' ',last_name) as customer,m.mission_name,jt.type,CASE WHEN j.sail_date = '0000-00-00' THEN NULL ELSE j.sail_date END as 'sail_date'
+SELECT j.id,j.asl_reference_no,j.invoice_number,c.name as customer,m.mission_name,jt.type,CASE WHEN j.sail_date = '0000-00-00' THEN NULL ELSE j.sail_date END as 'sail_date'
 ,CASE WHEN j.eta = '0000-00-00' THEN NULL ELSE j.eta END as 'eta' ,jc.file_closed,
 CASE WHEN jc.invoiced_date = '0000-00-00' THEN NULL ELSE jc.invoiced_date END as 'invoiced_date',
 CASE WHEN jc.payment_date = '0000-00-00' THEN NULL ELSE jc.payment_date END as 'payment_date',
-ss.status
+ss.status,
+j.final_destination
 from jobs j
 inner join  customers c ON c.id = j.customer_id
 left join missions m on m.id = c.mission_id

@@ -40,6 +40,12 @@ class Common_model extends CI_Model {
         return;
     }
 
+		//delete_with_customer
+		function delete_with_customer($id,$table){
+        $this->db->delete($table, array('customer_id' => $id));
+        return;
+    }
+
     //-- user role delete function
     function delete_user_role($id,$table){
         $this->db->delete($table, array('user_id' => $id));
@@ -75,7 +81,7 @@ class Common_model extends CI_Model {
 
 
 		function select_customers(){
-			$query = $this->db->query('SELECT c.id,concat(first_name,\' \',last_name,\' \',IFNULL(m.mission_name,\'\')) as name ,m.mission_name  FROM customers c left join missions m ON c.mission_id = m.id order by first_name');
+			$query = $this->db->query('SELECT c.id,concat(c.name,\' \',IFNULL(m.mission_name,\'\')) as name ,m.mission_name  FROM customers c left join missions m ON c.mission_id = m.id order by c.name');
 				$query = $query->result_array();
 				return $query;
 		}
@@ -328,7 +334,7 @@ function get_equipment_types(){
 
 	//get_customer_name
 	function get_customer_name_by_job($id){
-			$this->db->select('concat(c.first_name,\' \',c.last_name) as name');
+			$this->db->select('c.name as name');
 			$this->db->from('jobs j');
 			$this->db->join('customers c', 'c.id = j.customer_id');
 			$this->db->where('j.id', $id);
@@ -406,7 +412,7 @@ function get_equipment_types(){
 
 
 		function get_all_jobs(){
-				$this->db->select('j.id,j.asl_reference_no,j.invoice_number,concat(first_name,\' \',last_name) as customer,m.mission_name,jt.type,CASE WHEN j.sail_date = \'0000-00-00\' THEN NULL ELSE j.sail_date END AS sail_date,CASE WHEN j.eta = \'0000-00-00\' THEN NULL ELSE j.eta END AS eta');
+				$this->db->select('j.id,j.asl_reference_no,j.invoice_number,c.name as customer,m.mission_name,jt.type,CASE WHEN j.sail_date = \'0000-00-00\' THEN NULL ELSE j.sail_date END AS sail_date,CASE WHEN j.eta = \'0000-00-00\' THEN NULL ELSE j.eta END AS eta');
 				$this->db->from('jobs j');
 				$this->db->join('customers c','c.id = j.customer_id');
 				$this->db->join('missions m','m.id = c.mission_id','LEFT');
@@ -427,7 +433,7 @@ function get_equipment_types(){
 
 	 //get_new_jobs WHERE create_date >= DATE_SUB( CURDATE( ) , INTERVAL 30 DAY )
 	 function get_new_jobs(){
-			 $this->db->select('j.id,j.asl_reference_no,j.invoice_number,concat(first_name,\' \',last_name) as customer,m.mission_name,jt.type,CASE WHEN j.sail_date = \'0000-00-00\' THEN NULL ELSE j.sail_date END AS sail_date,CASE WHEN j.eta = \'0000-00-00\' THEN NULL ELSE j.eta END AS eta');
+			 $this->db->select('j.id,j.asl_reference_no,j.invoice_number,c.name as customer,m.mission_name,jt.type,CASE WHEN j.sail_date = \'0000-00-00\' THEN NULL ELSE j.sail_date END AS sail_date,CASE WHEN j.eta = \'0000-00-00\' THEN NULL ELSE j.eta END AS eta');
 			 $this->db->from('jobs j');
 			 $this->db->join('customers c','c.id = j.customer_id');
 			 $this->db->join('missions m','m.id = c.mission_id','LEFT');
@@ -442,15 +448,15 @@ function get_equipment_types(){
 	 //get_bl_pending_jobs
 	 //'INNER JOIN bl_generation bl ON bl.job_id = j.id AND jt.type = \'Ocean Export\' AND bl.uploaded = 0';
 	 function get_bl_pending_jobs(){
-			 $this->db->select('j.id,j.asl_reference_no,j.invoice_number,concat(first_name,\' \',last_name) as customer,m.mission_name,jt.type,CASE WHEN j.sail_date = \'0000-00-00\' THEN NULL ELSE j.sail_date END AS sail_date,CASE WHEN j.eta = \'0000-00-00\' THEN NULL ELSE j.eta END AS eta');
+			 $this->db->select('j.id,j.asl_reference_no,j.invoice_number,c.name as customer,m.mission_name,jt.type,CASE WHEN j.sail_date = \'0000-00-00\' THEN NULL ELSE j.sail_date END AS sail_date,CASE WHEN j.eta = \'0000-00-00\' THEN NULL ELSE j.eta END AS eta');
 			 $this->db->from('jobs j');
 			 $this->db->join('customers c','c.id = j.customer_id');
 			 $this->db->join('missions m','m.id = c.mission_id','LEFT');
 			 $this->db->join('job_types jt','jt.id = j.job_type_id');
 			 $this->db->join('bl_generation bl','bl.job_id = j.id');
 			 $this->db->where('jt.type','Ocean Export');
-			 $this->db->where('jt.type','Ocean Export');
-			 $this->db->order_by('bl.uploaded', 0);
+			 $this->db->where('bl.uploaded',0);
+			 $this->db->order_by('j.id');
 			 $query = $this->db->get();
 			 $query = $query->result_array();
 			 return $query;
@@ -501,6 +507,34 @@ function get_equipment_types(){
 			}
 
 		}
+
+		function iscurrent_status($jobid,$id){
+
+			$this->db->select('*');
+			$this->db->from('jobs');
+			$this->db->where('id', $jobid);
+			$this->db->where('status_history_id', $id);
+			$this->db->limit(1);
+			$query = $this->db->get();
+			if($query->num_rows() >= 1) {
+					return true;
+			}else{
+					return false;
+			}
+		}
+
+		function unlink_status_history($jobid,$id){
+			$sql = 'UPDATE jobs SET status_history_id = NULL WHERE id = '.$jobid.' AND status_history_id = '.$id.'';
+			$this->db->query($sql);
+
+		}
+
+		function link_max_status_history($jobid,$id){
+			$sql = 'UPDATE jobs SET status_history_id = (SELECT MAX(id)FROM status_history WHERE job_id = '.$jobid.' AND id <> '.$id.') WHERE id = '.$jobid.'';
+			$this->db->query($sql);
+
+		}
+
 
 		//invalid_delete_email
 		function invalid_delete_email($id)
@@ -566,6 +600,20 @@ function get_equipment_types(){
         $this->db->select('*');
         $this->db->from('customers');
         $this->db->where('email', $email);
+        $this->db->limit(1);
+        $query = $this->db->get();
+        if($query->num_rows() == 1) {
+            return $query->result();
+        }else{
+            return false;
+        }
+    }
+
+		public function check_email_customer_edit($email,$id){
+        $this->db->select('*');
+        $this->db->from('customers');
+        $this->db->where('email', $email);
+				$this->db->where('id !=', $id);
         $this->db->limit(1);
         $query = $this->db->get();
         if($query->num_rows() == 1) {
@@ -911,6 +959,23 @@ function get_equipment_types(){
  	 $query = $query->result_array();
  	 return $query;
 
+	}
+
+	function validatepassword($password){
+		$this->db->select('*');
+		$this->db->from('user');
+		$this->db->where('id', $this->session->userdata('id'));
+		$this->db->where('password', md5($password));
+		$this->db->where('status', '1');
+		$this->db->limit(1);
+		$query = $this->db->get();
+
+		if($query->num_rows() == 1){
+			 return true;
+		}
+		else{
+				return false;
+		}
 	}
 
 

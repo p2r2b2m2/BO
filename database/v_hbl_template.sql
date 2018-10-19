@@ -1,7 +1,7 @@
 
 CREATE VIEW `v_hbl_template`  AS
 select `j`.`id` AS `id`,
-concat(`c`.`first_name`,' ',`c`.`last_name`) AS `C_NAME`,
+`c`.`name` AS `C_NAME`,
 `j`.`hbl_number` AS `HBL_NUMBER`,
 `j`.`c_booking_number` AS `CBN`,
 `ja`.`pa_1` AS `PICK_UP_ADDR_1`,

@@ -42,6 +42,8 @@
 
 
 
+
+
     <div class="row">
         <div class="col-lg-12">
             <div class="card">
@@ -69,7 +71,7 @@
                       <h6 class="m-b-0 text-white">New Job</h6>
                   </div>
                   <div class="card-body">
-                      <form method="post" action="<?php echo base_url('admin/jobs/add') ?>" enctype="multipart/form-data" class="form-horizontal" novalidate>
+                      <form method="post" action="<?php echo base_url('admin/jobs/add/0') ?>" enctype="multipart/form-data" class="form-horizontal" novalidate>
                           <div class="form-body">
                               <hr>
                               <div class="row p-t-20">
@@ -77,15 +79,23 @@
                                       <div class="form-group">
                                           <label class="control-label">Customer<span class="text-danger">*</span></label>
                                           <div class="controls">
-                                            <select class="form-control select2" style="width: 100%" name="customer_id" required data-validation-required-message=" Customer should be selected">
+                                            <select class="form-control select2" style="width: 90%" name="customer_id" required data-validation-required-message=" Customer should be selected">
                                                 <option  value="">select</option>
                                                 <?php foreach ($customers as $customer): ?>
-                                                    <option  value="<?php echo $customer['id']; ?>"><?php echo $customer['name']; ?></option>
+                                                  <?php
+                                                      if($customer['id'] == $newcustomer){
+                                                          $selec = 'selected';
+                                                      }else{
+                                                          $selec = '';
+                                                      }
+                                                  ?>
+                                                    <option <?php echo $selec; ?>  value="<?php echo $customer['id']; ?>"><?php echo $customer['name']; ?></option>
                                                 <?php endforeach ?>
-
                                             </select>
-                                            <small class="form-control-feedback"> In format of first name last name and mission </small>
+                                            <a data-toggle="modal" style="width: 90%" data-target="#editModal_" href="#"  data-original-title="Quick Add"> <i data-toggle="tooltip" data-original-title="Quick Add" class="fa fa-drivers-license-o text-success m-r-10 fa-lg"></i> </a>
+
                                           </div>
+                                          <small class="form-control-feedback"> In format of name and mission. </small>
                                         </div>
                                   </div>
 
@@ -292,7 +302,6 @@
                           </div>
                           <div class="form-actions">
                               <button type="submit" class="btn btn-success"> <i class="fa fa-check"></i> Save</button>
-                              <button type="button" class="btn btn-inverse">Cancel</button>
                           </div>
                       </form>
                   </div>
@@ -324,12 +333,67 @@
 
 </div>
 
-<script>
-$('body').on('click', '.btn.active', function(e){
-    e.stopImmediatePropagation();
-    e.preventDefault();
-    console.log(this, $('input:radio[name="options"]', this));
-    $(this).removeClass('active');
-    $('input:radio[name="options"]', this).prop('checked', false);
-})
-</script>
+
+<div class="modal fade" id="editModal_">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h4 class="modal-title">Quick Add Customer</h4>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+
+      <!-- Modal body -->
+      <div class="modal-body">
+
+        <form method="post" action="<?php echo base_url('admin/customers/easy_customer') ?>" class="form-horizontal" novalidate>
+            <div class="form-body">
+                <br>
+
+                <div class="form-group">
+                    <label for="name" class="control-label">Name:<span class="text-danger"></span></label>
+                    <div class="controls">
+                        <input type="text" class="form-control" name="name"  required data-validation-required-message=" Customer name is required" >
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="email" class="control-label">Email:</label>
+                    <div class="controls">
+                    <input type="text" name="email" class="form-control" required data-validation-required-message=" Email is required"  >
+                    </div>
+                </div>
+
+                <div class="form-group has-success">
+                    <label class="control-label">Mission</label>
+                    <select class="form-control select2" style="width: 100%" name="mission_id">
+
+                        <?php foreach ($missions as $mission): ?>
+                            <option  value="<?php echo $mission['id']; ?>"><?php echo $mission['mission_name']; ?></option>
+                        <?php endforeach ?>
+
+                    </select>
+                    <small class="form-control-feedback"> Select Mission</small> </div>
+
+                <!-- CSRF token -->
+                <input type="hidden" name="<?=$this->security->get_csrf_token_name();?>" value="<?=$this->security->get_csrf_hash();?>" />
+                <input type="hidden" name="id" value="0">
+
+
+
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default waves-effect" data-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-danger waves-effect waves-light">Create</button>
+            </div>
+
+        </form>
+
+
+      </div>
+
+    </div>
+  </div>
+</div>

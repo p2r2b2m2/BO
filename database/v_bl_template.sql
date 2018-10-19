@@ -1,6 +1,6 @@
 CREATE VIEW `v_bl_template`  AS
 select `j`.`id` AS `id`,
-concat(`c`.`first_name`,' ',`c`.`last_name`) AS `C_NAME`,
+`c`.`name` AS `C_NAME`,
 `j`.`asl_reference_no` AS `ASL_REF`,
 `j`.`c_booking_number` AS `CBN`,
 `ja`.`agent_name` AS `AGENT_NAME`,

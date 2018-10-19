@@ -44,21 +44,21 @@
                <div class="card-body">
                    <form method="post" enctype="multipart/form-data" action="<?php echo base_url('admin/customers/add') ?>" >
                        <div class="form-body">
-                           <h3 class="card-title">Person Info</h3>
+                           <h3 class="card-title">Customer Info</h3>
                            <hr>
                            <div class="row p-t-20">
                                <div class="col-md-6">
                                    <div class="form-group">
-                                       <label class="control-label">First Name <span class="text-danger">*</span></label>
-                                       <input type="text" name="first_name"  required="" class="form-control">
+                                       <label class="control-label">Name <span class="text-danger">*</span></label>
+                                       <input type="text" name="name"  required="" class="form-control">
                                </div>
                                </div>
                                <!--/span-->
                                <div class="col-md-6">
                                    <div class="form-group">
-                                       <label class="control-label">Last Name <span class="text-danger">*</span></label>
-                                       <input type="text" name="last_name"  required="" class="form-control">
-                               </div>
+                                       <label class="control-label">Phone No</label>
+                                       <input type="text" name="phone" class="form-control" >
+                                   </div>
                                </div>
                                <!--/span-->
                            </div>
@@ -86,19 +86,7 @@
                                <!--/span-->
                            </div>
                            <!--/row-->
-                           <div class="row">
-                               <div class="col-md-6">
-                                   <div class="form-group">
-                                       <label class="control-label">Phone No</label>
-                                       <input type="text" name="phone" class="form-control" >
-                                   </div>
-                               </div>
-                               <!--/span-->
-                               <div class="col-md-6">
-
-                               </div>
-                               <!--/span-->
-                           </div>
+                           
                            <!--/row-->
                            <h3 class="box-title m-t-40">Address</h3>
                            <hr>

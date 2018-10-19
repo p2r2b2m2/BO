@@ -212,5 +212,38 @@ class User extends CI_Controller {
         redirect(base_url('admin/user/power'));
     }
 
+		public function changepass()
+		{
+			if ($_POST) {
+
+				//check if this status is eligable for an emal updated_by
+				$currpass = $_POST['password'];
+				$passwordmatch = $this->common_model->validatepassword($currpass);
+
+				if(!$passwordmatch){
+					$this->session->set_flashdata('error_msg', 'Current password does not match');
+					redirect(base_url('admin/user/changepass'));
+				}
+				else{
+          $newpassword = md5($_POST['password2']);
+					$data = array(
+							'password' => $newpassword
+					);
+
+					$data = $this->security->xss_clean($data);
+					$data=array_map('trim',$data);
+					$this->common_model->update($data, $this->session->userdata('id'),'user');
+	        $this->session->set_flashdata('msg', 'Password Changed');
+	        redirect(base_url('admin/user/changepass'));
+				}
+
+				}
+
+			$data['user'] = $this->session->userdata('id');
+			$data['main_content'] = $this->load->view('admin/user/changepass', $data, TRUE);
+			$this->load->view('admin/index', $data);
+
+		}
+
 
 }

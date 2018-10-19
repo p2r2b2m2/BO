@@ -28,7 +28,7 @@ class Auth extends CI_Controller {
                   $data = array(
                       'id' => $row->id,
                       'customer_id' => $row->customer_id,
-                      'name' => $row->first_name,
+                      'name' => $row->name,
                       'email' =>$row->email,
                       'is_login' => TRUE,
                       'type' => 'C'

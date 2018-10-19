@@ -1,6 +1,6 @@
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
-  <script>window.jQuery || document.write('<script src="<?= base_url()?>global/admin//bootstrap/assets/js/vendor/jquery.min.js"><\/script>')</script>
+  <script>window.jQuery || document.write('<script src="<?= base_url()?>global/bootstrap/assets/js/vendor/jquery.min.js"><\/script>')</script>
 
 
   <!-- Bootstrap core CSS -->
@@ -24,6 +24,17 @@
 
 </script>
 
+<div class="container-fluid">
+  <div class="row page-titles">
+      <div class="col-md-5 col-8 align-self-center">
+          <ol class="breadcrumb">
+              <li class="breadcrumb-item"><a href="<?php echo base_url('admin/jobs'); ?>">Jobs</a></li>
+              <li class="breadcrumb-item"><a href="<?php echo base_url('admin/jobs/edit/'.$jobid); ?>"><?php echo $jobid; ?></a></li>
+              <li class="breadcrumb-item active">Notifications</li>
+          </ol>
+      </div>
+
+  </div>
 <div class="row">
     <div class="col-lg-12">
       <?php $msg = $this->session->flashdata('msg'); ?>
@@ -43,7 +54,7 @@
 </div>
 <div class="row">
 
-    <div class="col-sm-9 col-sm-offset-3 col-md-6 col-md-offset-2 main">
+    <div class="col-lg-12">
         <h4 class="page-header">Edit Email Template</h4>
 
         <?= form_open_multipart(base_url('admin/jobs/edit_email/'.$id), array('class' => 'form-horizontal')) ?>
@@ -87,6 +98,7 @@
 
         <?php echo form_close(); ?>
     </div>
+</div>
 </div>
 
 <script src="<?= base_url()?>global/bootstrap/assets/js/vendor/holder.min.js"></script>

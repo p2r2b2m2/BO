@@ -44,7 +44,7 @@
 
 
                     <div class="table-responsive m-t-40">
-                        <table id="example23" class="display nowrap table table-hover table-striped table-bordered" cellspacing="0" width="100%">
+                        <table id="myTable" class="display nowrap table table-hover table-striped table-bordered" cellspacing="0" width="100%">
                             <thead>
                                 <tr>
                                   <th>ASL Ref #</th>
@@ -78,7 +78,7 @@
                             <?php $i = 1; foreach ($emails as $row): ?>
 
                                 <tr>
-                                  <td><a href="<?php echo base_url('admin/jobs/job_status/'.$row['asl_reference_no']) ?>" data-toggle="tooltip" data-original-title="Edit Job"><?php echo $row['asl_reference_no']; ?> </a></td>
+                                  <td><a href="<?php echo base_url('admin/jobs/job_status/'.$row['asl_reference_no']); ?>" data-toggle="tooltip" data-original-title="Edit Job"><?php echo $row['asl_reference_no']; ?> </a></td>
 
                                     <td><?php echo $row['status']; ?></td>
                                     <td><?php echo $row['comment']; ?></td>
@@ -89,7 +89,7 @@
                                       <?php if ($row['sent'] == 1): ?>
                                         <a href="#" data-toggle="tooltip" data-original-title="Email Sent"> <i class="fa fa-folder-open-o text-info m-r-10 disabled"></i> </a></th>
                                       <?php else: ?>
-                                        <a href="<?php echo base_url('admin/jobs/edit_email/'.$row['id']) ?>" data-toggle="tooltip" data-original-title="Edit Before Sending"> <i class="fa fa-folder-open text-info m-r-10"></i> </a></th>
+                                        <a href="<?php echo base_url('admin/jobs/edit_email/'.$row['id']); ?>" data-toggle="tooltip" data-original-title="Edit Before Sending"> <i class="fa fa-folder-open text-info m-r-10"></i> </a></th>
                                       <?php endif ?>
 
                                     <td>

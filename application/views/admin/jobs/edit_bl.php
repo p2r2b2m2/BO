@@ -1,6 +1,6 @@
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
-  <script>window.jQuery || document.write('<script src="<?= base_url()?>global/admin//bootstrap/assets/js/vendor/jquery.min.js"><\/script>')</script>
+  <script>window.jQuery || document.write('<script src="<?= base_url()?>global/bootstrap/assets/js/vendor/jquery.min.js"><\/script>')</script>
 
 
   <!-- Bootstrap core CSS -->
@@ -24,6 +24,16 @@
 
 </script>
 <div class="container-fluid">
+  <div class="row page-titles">
+      <div class="col-md-5 col-8 align-self-center">
+          <ol class="breadcrumb">
+              <li class="breadcrumb-item"><a href="<?php echo base_url('admin/jobs'); ?>">Jobs</a></li>
+              <li class="breadcrumb-item"><a href="<?php echo base_url('admin/jobs/edit/'.$id); ?>"><?php echo $id; ?></a></li>
+              <li class="breadcrumb-item active">MBL</li>
+          </ol>
+      </div>
+
+  </div>
 <div class="row">
     <div class="col-lg-12">
       <?php $msg = $this->session->flashdata('msg'); ?>
@@ -43,7 +53,7 @@
 </div>
 <div class="row">
 
-    <div class="col-sm-10 col-sm-offset-3 col-md-9 col-md-offset-2 main">
+    <div class="col-lg-12 main">
         <h4 class="page-header">Edit MBL </h4>
 
         <?= form_open_multipart(base_url('admin/jobs/edit_bl/'.$id), array('class' => 'form-horizontal')) ?>
@@ -51,14 +61,14 @@
 
         <div class="form-group">
             <label class="control-label" for="activation_content">Content</label>
-            <textarea  rows="20" cols="50" id="textEditor" name="content" class="form-control"
+            <textarea   id="textEditor" name="content" class="form-control"
                                            placeholder="activation_content"><?= set_value('content',$content) ?></textarea>
             <p class="text-red"><?= form_error('content'); ?></p>
         </div>
 
         <input class="btn btn-primary" type="submit" name="save" value="Save Changes"/>
 
-        <a class="btn btn-success" href="<?= base_url('admin/jobs/create_bl/'.$id) ?>">Generate BL</a>
+        <a class="btn btn-success disableafteroneclick" id = "one" data-disabledtext="Processing..."  href="<?= base_url('admin/jobs/create_bl/'.$id) ?>">Generate BL</a>
 
         <a class="btn btn-info" href="<?= base_url('admin/jobs/job_docs/'.$id) ?>">Go To DOC Upload</a>
 
